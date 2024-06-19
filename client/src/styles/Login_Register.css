@@ -1,0 +1,82 @@
+.login, .register {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  height: 100vh;
+}
+
+.webInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #17A2B8;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  padding: 20px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.userInput {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.userInput input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.btn1, .btn2 {
+  margin-top: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn1{
+    background-color: #17A2B8;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+    width: 100%;
+    border-radius: 16px;
+}
+
+.btn2{
+    background-color: #FFFFFF;
+    color: #17A2B8;
+    border-color: #17A2B8;
+    width: 100%;
+    border-radius: 16px;
+}
+
+.noAccountText {
+  margin-top: 20px;
+  color: #828282;
+}
+
+.webInfoUpperText {
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+.webInfoLowerText {
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
