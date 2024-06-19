@@ -1,0 +1,23 @@
+.userDetails {
+}
+
+.userInfoSettings input {
+  width: 50%;
+  height: 30px;
+  border-radius: 11px;
+  margin-bottom: 20px;
+  border-color: #d0d0d0;
+  font-size: medium;
+  padding: 5px;
+}
+
+.update {
+  background-color: #17a2b8;
+  color: #ffffff;
+  border-color: #ffffff;
+  width: 50%;
+  height: 40px;
+  border-radius: 16px;
+  font-size: medium;
+  
+}
