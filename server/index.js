@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const app = express();
+const cookieParser = require('cookie-parser');
+
 const { mongoose } = require("mongoose");
 mongoose
   .connect(process.env.MONGO_URL)
@@ -9,6 +11,9 @@ mongoose
   .catch((err) => console.log("Database is not Connected."));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({extended:false}));
+
 app.use("/", require("./Routes/authRoutes"));
 
 const port = 8000;
