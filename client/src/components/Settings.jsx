@@ -1,15 +1,39 @@
 import "../styles/Settings.css";
+import { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../contex/userContext";
 
-function settings() {
+function Settings() {
+  const { user } = useContext(UserContext);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setEmail(user.email);
+    }
+  }, [user]);
+
   return (
     <>
       <h2>Settings</h2>
       <div className="userDetails">
         <div className="userInfoSettings">
-          <input type="text" placeholder="Name" />
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div className="userInfoSettings">
-          <input type="text" placeholder="Email" />
+          <input
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="userInfoSettings">
           <input type="password" placeholder="Old Password" />
@@ -25,4 +49,4 @@ function settings() {
   );
 }
 
-export default settings
+export default Settings;
