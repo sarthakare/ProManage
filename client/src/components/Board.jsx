@@ -1,13 +1,21 @@
 import "../styles/Board.css";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../contex/userContext";
-import { VscCollapseAll } from "react-icons/vsc";
-import { IoAdd } from "react-icons/io5";
+import Backlog from "./TaskStages/Backlog";
+import ToDo from "./TaskStages/ToDo";
+import InProgress from "./TaskStages/Inprogress";
+import Done from "./TaskStages/Done";
 
 function Board() {
   const { user } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState("");
   const [selectedOption, setSelectedOption] = useState("thisWeek");
+  const [tasks, setTasks] = useState({
+    backlog: [],
+    todo: [],
+    inProgress: [],
+    done: [],
+  });
 
   useEffect(() => {
     const formatDate = (date) => {
@@ -37,6 +45,17 @@ function Board() {
     setSelectedOption(event.target.value);
   };
 
+  const moveTask = (taskId, from, to) => {
+    setTasks((prevState) => {
+      const taskToMove = prevState[from].find((task) => task.id === taskId);
+      return {
+        ...prevState,
+        [from]: prevState[from].filter((task) => task.id !== taskId),
+        [to]: [...prevState[to], taskToMove],
+      };
+    });
+  };
+
   return (
     <div className="board">
       <div className="headingContainer">
@@ -58,31 +77,10 @@ function Board() {
         </div>
       </div>
       <div className="taskContainer">
-        <div className="backlogContainer">
-          <div className="containerName">Backlog</div>
-          <div className="icons">
-            <VscCollapseAll />
-          </div>
-        </div>
-        <div className="toDoContainer">
-          <div className="containerName">To Do</div>
-          <div className="icons">
-            <IoAdd />{" "}
-            <VscCollapseAll />
-          </div>
-        </div>
-        <div className="inprocessContainer">
-          <div className="containerName">Inprocess</div>
-          <div className="icons">
-            <VscCollapseAll />
-          </div>
-        </div>
-        <div className="doneContainer">
-          <div className="containerName">Done</div>
-          <div className="icons">
-            <VscCollapseAll />
-          </div>
-        </div>
+        <Backlog tasks={tasks.backlog} moveTask={moveTask} />
+        <ToDo tasks={tasks.todo} moveTask={moveTask} />
+        <InProgress tasks={tasks.inProgress} moveTask={moveTask} />
+        <Done tasks={tasks.done} />
       </div>
     </div>
   );

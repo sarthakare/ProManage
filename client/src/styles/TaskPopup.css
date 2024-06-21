@@ -1,0 +1,91 @@
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 400px;
+}
+
+.popup-content h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group span {
+  color: red;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.priority-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.priority-button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1;
+  margin-right: 5px;
+}
+
+.priority-button.selected {
+  border-color: #007bff;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.priority-button:last-child {
+  margin-right: 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-button,
+.save-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.save-button {
+  background-color: #007bff;
+  color: #fff;
+}

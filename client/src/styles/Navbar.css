@@ -17,8 +17,7 @@ body {
   color: #333;
   padding: 20px;
   box-sizing: border-box;
-  border-right: 1px solid #ccc; /* Optional: for a visual separator */
-  z-index: 1000; /* Ensures the navbar is above other content */
+  border-right: 1px solid #ccc;
 }
 
 .navbar-header {
