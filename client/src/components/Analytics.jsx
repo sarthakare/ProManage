@@ -2,8 +2,8 @@ import "../styles/Analytics.css";
 
 function Analytics() {
   return (
-    <div>
-      <h1>Analytics</h1>
+    <div className="analytics">
+      <h2>Analytics</h2>
       <div className="task-dashboard">
         <div className="task-list">
           <div className="task-item">

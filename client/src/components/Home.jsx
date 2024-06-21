@@ -4,7 +4,8 @@ import Navbar from "./Navbar";
 import Board from "./Board";
 import Analytics from "./Analytics";
 import Settings from "./Settings";
-import "../styles/Navbar.css"; // Ensure this import is here to apply the styles
+import "../styles/Navbar.css";
+import "../styles/Home.css";
 import { UserContextProvider } from "../../contex/userContext";
 
 function Home() {

@@ -52,7 +52,7 @@ function Settings() {
   };
 
   return (
-    <>
+    <div className="settings">
       <h2>Settings</h2>
       <form onSubmit={handleUpdate} className="userDetails">
         <div className="userInfoSettings">
@@ -93,7 +93,7 @@ function Settings() {
           </button>
         </div>
       </form>
-    </>
+    </div>
   );
 }
 

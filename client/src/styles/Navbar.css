@@ -1,11 +1,12 @@
-/* Navbar.css */
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
 .navbar {
+  position: fixed; /* Keeps the navbar fixed in place */
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -17,6 +18,7 @@ body {
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc; /* Optional: for a visual separator */
+  z-index: 1000; /* Ensures the navbar is above other content */
 }
 
 .navbar-header {
@@ -98,5 +100,5 @@ body {
 
 .mainContent {
   flex-grow: 1;
-  padding: 20px;
+  margin-left: 250px; /* Adjust to account for the width of the fixed navbar */
 }
