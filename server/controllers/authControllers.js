@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Task = require("../models/task");
 const { hashPassword, comparePassword } = require("../helper/auth");
 const jwt = require('jsonwebtoken');
 
@@ -123,10 +124,68 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const saveTask = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { name, priority, checklist, dueDate } = req.body;
+
+    if (!name || !priority || !checklist || !dueDate) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const newTask = new Task({
+      name,
+      priority,
+      checklist,
+      dueDate,
+      userId: decoded.id,
+    });
+
+    const savedTask = await newTask.save();
+    return res.json(savedTask);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const savedTasks = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Fetch tasks from the database for the logged-in user
+    const tasks = await Task.find({ userId: decoded.id });
+
+    // Ensure checklist items are objects
+    const transformedTasks = tasks.map((task) => ({
+      ...task._doc,
+      checklist: task.checklist.map((item) => ({
+        text: item, // If item is originally a string
+        completed: false, // Set default or fetch real value
+      })),
+    }));
+
+    res.json(transformedTasks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
 module.exports = {
   test,
   registerUser,
   loginUser,
   getProfile,
   updateUserProfile,
+  saveTask,
+  savedTasks,
 };

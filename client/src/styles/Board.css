@@ -61,8 +61,8 @@ select {
   padding: 10px;
   background-color: #eef2f5;
   border-radius: 10px;
-  width: 20vw;
-  height: 100vh;
+  width: 22vw;
+  height: max-content;
 }
 
 .containerName {

@@ -1,26 +1,41 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import axios from "axios"; // Make sure you have axios installed
+import DatePicker from "react-datepicker"; // Import DatePicker
+import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker styles
 import "../../styles/TaskPopup.css";
 
 function TaskPopup({ isOpen, onClose, onSave }) {
   const [taskName, setTaskName] = useState("");
   const [priority, setPriority] = useState("");
   const [checklist, setChecklist] = useState([]);
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(null); // Initialize dueDate as null
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const newTask = {
       id: new Date().toISOString(),
       name: taskName,
-      priority,
+      priority, // Directly use the priority state
       checklist,
       dueDate,
     };
-    onSave(newTask);
-    setTaskName("");
-    setPriority("");
-    setChecklist([]);
-    setDueDate("");
+
+    try {
+      const response = await axios.post("/savetask", newTask);
+      if (response.status === 200) {
+        onSave(newTask); // Call the onSave callback if the API call is successful
+        setTaskName("");
+        setPriority("");
+        setChecklist([]);
+        setDueDate(null); // Reset dueDate to null
+      } else {
+        // Handle error response from the server
+        console.error("Error saving task:", response.data);
+      }
+    } catch (error) {
+      // Handle any errors that occurred during the request
+      console.error("Error saving task:", error);
+    }
   };
 
   if (!isOpen) {
@@ -35,6 +50,11 @@ function TaskPopup({ isOpen, onClose, onSave }) {
     const newChecklist = checklist.map((item, i) =>
       i === index ? value : item
     );
+    setChecklist(newChecklist);
+  };
+
+  const handleDeleteChecklistItem = (index) => {
+    const newChecklist = checklist.filter((item, i) => i !== index);
     setChecklist(newChecklist);
   };
 
@@ -63,27 +83,27 @@ function TaskPopup({ isOpen, onClose, onSave }) {
               <button
                 type="button"
                 className={`priority-button ${
-                  priority === "high" ? "selected" : ""
+                  priority === "HIGH PRIORITY" ? "selected" : ""
                 }`}
-                onClick={() => setPriority("high")}
+                onClick={() => setPriority("HIGH PRIORITY")}
               >
                 HIGH PRIORITY
               </button>
               <button
                 type="button"
                 className={`priority-button ${
-                  priority === "moderate" ? "selected" : ""
+                  priority === "MODERATE PRIORITY" ? "selected" : ""
                 }`}
-                onClick={() => setPriority("moderate")}
+                onClick={() => setPriority("MODERATE PRIORITY")}
               >
                 MODERATE PRIORITY
               </button>
               <button
                 type="button"
                 className={`priority-button ${
-                  priority === "low" ? "selected" : ""
+                  priority === "LOW PRIORITY" ? "selected" : ""
                 }`}
-                onClick={() => setPriority("low")}
+                onClick={() => setPriority("LOW PRIORITY")}
               >
                 LOW PRIORITY
               </button>
@@ -94,25 +114,40 @@ function TaskPopup({ isOpen, onClose, onSave }) {
               Checklist (0/{checklist.length}) <span>*</span>
             </label>
             {checklist.map((item, index) => (
-              <input
-                key={index}
-                type="text"
-                value={item}
-                onChange={(e) => handleChecklistChange(index, e.target.value)}
-                placeholder="Checklist Item"
-              />
+              <div key={index} className="checkListItems">
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => handleChecklistChange(index, e.target.value)}
+                  placeholder="Checklist Item"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeleteChecklistItem(index)}
+                >
+                  &times;
+                </button>
+              </div>
             ))}
-            <button type="button" onClick={handleAddChecklistItem}>
+            <button
+              type="button"
+              className="add-new-button"
+              onClick={handleAddChecklistItem}
+            >
               + Add New
             </button>
           </div>
           <div className="form-group">
-            <button
-              type="button"
-              onClick={() => alert("Due Date Picker not implemented")}
-            >
-              Select Due Date
-            </button>
+            <label>
+              Due Date <span>*</span>
+            </label>
+            <DatePicker
+              selected={dueDate}
+              onChange={(date) => setDueDate(date)}
+              dateFormat="yyyy/MM/dd"
+              placeholderText="Select Due Date"
+              className="due-date-picker"
+            />
           </div>
           <div className="form-actions">
             <button type="button" className="cancel-button" onClick={onClose}>

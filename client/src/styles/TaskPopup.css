@@ -1,3 +1,4 @@
+/* TaskPopup.css */
 .popup {
   position: fixed;
   top: 0;
@@ -8,39 +9,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .popup-content {
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  width: 400px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.popup-content h2 {
+h2 {
   margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.form-group label {
+label {
+  font-size: 14px;
+  color: #333333;
+  margin-bottom: 8px;
   display: block;
-  margin-bottom: 5px;
 }
 
-.form-group span {
-  color: red;
+label span {
+  color: #ff0000;
 }
 
-.form-group input {
+input[type="text"] {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #dddddd;
   border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .priority-options {
@@ -49,43 +64,90 @@
 }
 
 .priority-button {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
   flex: 1;
-  margin-right: 5px;
-}
-
-.priority-button.selected {
-  border-color: #007bff;
-  background-color: #007bff;
-  color: #fff;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  text-align: center;
 }
 
 .priority-button:last-child {
   margin-right: 0;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: space-between;
+.priority-button.selected {
+  border-color: #007bff;
+  background-color: #007bff;
+  color: #ffffff;
 }
 
-.cancel-button,
-.save-button {
-  padding: 10px 20px;
+.checkListItems {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkListItems input {
+  flex: 1;
+}
+
+.checkListItems button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #ff0000;
+  font-size: 16px;
+}
+
+button[type="button"] {
+  padding: 10px 15px;
+  font-size: 14px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
+button.add-new-button {
+  display: inline-block; /* Align Add New button properly */
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #007bff;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+button.add-new-button:hover {
+  text-decoration: underline;
+}
+
 .cancel-button {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #ff4d4d;
+  color: #ffffff;
 }
 
 .save-button {
   background-color: #007bff;
-  color: #fff;
+  color: #ffffff;
+  margin-left: 10px;
 }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.due-date-picker {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
