@@ -1,18 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { VscCollapseAll } from "react-icons/vsc";
 import { IoAdd } from "react-icons/io5";
-import { FaCircle } from "react-icons/fa6";
-import TaskPopup from "./TaskPopup";
+import { FaCircle, FaChevronUp, FaChevronDown } from "react-icons/fa6";
 import axios from "axios";
+import TaskPopup from "./TaskPopup";
 import PropTypes from "prop-types";
 import "../../styles/ToDo.css";
+import TaskMenu from "./TaskMenu";
 
 function ToDo() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [openTaskMenuId, setOpenTaskMenuId] = useState(null);
+  const [isAllChecklistsCollapsed, setIsAllChecklistsCollapsed] =
+    useState(true); // State for collapsing all checklists
+  const taskMenuRef = useRef(null);
 
   useEffect(() => {
     fetchTasks();
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const fetchTasks = async () => {
@@ -45,13 +55,27 @@ function ToDo() {
     fetchTasks(); // Fetch tasks again to update the list
   };
 
+  const handleClickOutside = (event) => {
+    if (taskMenuRef.current && !taskMenuRef.current.contains(event.target)) {
+      setOpenTaskMenuId(null);
+    }
+  };
+
+  const toggleTaskMenu = (taskId) => {
+    setOpenTaskMenuId(openTaskMenuId === taskId ? null : taskId);
+  };
+
+  const collapseAllChecklists = () => {
+    setIsAllChecklistsCollapsed(!isAllChecklistsCollapsed);
+  };
+
   return (
     <div className="toDoContainer">
       <div className="containerHeading">
         <div className="containerName">To Do</div>
         <div className="icons">
           <IoAdd onClick={handleAddTask} />
-          <VscCollapseAll />
+          <VscCollapseAll onClick={collapseAllChecklists} />
         </div>
         <TaskPopup
           isOpen={isPopupOpen}
@@ -61,15 +85,36 @@ function ToDo() {
       </div>
       <div className="toDoTasks">
         {tasks.map((task) => (
-          <TaskCard key={task._id} task={task} />
+          <div key={task._id} ref={taskMenuRef}>
+            <TaskCard
+              task={task}
+              isMenuOpen={openTaskMenuId === task._id}
+              toggleMenu={() => toggleTaskMenu(task._id)}
+              closeMenu={() => setOpenTaskMenuId(null)}
+              isAllChecklistsCollapsed={isAllChecklistsCollapsed}
+            />
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-function TaskCard({ task }) {
-  
+function TaskCard({
+  task,
+  isMenuOpen,
+  toggleMenu,
+  closeMenu,
+  isAllChecklistsCollapsed,
+}) {
+  const [isChecklistVisible, setIsChecklistVisible] = useState(
+    !isAllChecklistsCollapsed
+  ); // State for checklist visibility
+
+  useEffect(() => {
+    setIsChecklistVisible(!isAllChecklistsCollapsed);
+  }, [isAllChecklistsCollapsed]);
+
   const formatDate = (dateString) => {
     const options = { month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -88,6 +133,10 @@ function TaskCard({ task }) {
     }
   };
 
+  const toggleChecklistVisibility = () => {
+    setIsChecklistVisible(!isChecklistVisible);
+  };
+
   return (
     <div className="taskCard">
       <div className="taskHeader">
@@ -96,22 +145,28 @@ function TaskCard({ task }) {
           &nbsp; {/* Empty space for the dot */}
           {task.priority}
         </div>
-        <div className="taskOptions">...</div>
+        <div className="taskOptions" onClick={toggleMenu}>
+          ...
+          {isMenuOpen && <TaskMenu closeMenu={closeMenu} />}
+        </div>
       </div>
       <h3>{task.name}</h3>
       <div className="checklist">
-        <h4>
+        <h4 onClick={toggleChecklistVisibility} style={{ cursor: "pointer" }}>
           Checklist ({task.checklist.filter((item) => item.completed).length}/
-          {task.checklist.length})
+          {task.checklist.length}){" "}
+          {isChecklistVisible ? <FaChevronUp /> : <FaChevronDown />}
         </h4>
-        <div className="checklistItems">
-          {task.checklist.map((item, index) => (
-            <div key={index} className="checklistItem">
-              <input type="checkbox" checked={item.completed} readOnly />
-              <span>{item.text}</span>
-            </div>
-          ))}
-        </div>
+        {isChecklistVisible && (
+          <div className="checklistItems">
+            {task.checklist.map((item, index) => (
+              <div key={index} className="checklistItem">
+                <input type="checkbox" checked={item.completed} readOnly />
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div className="taskFooter">
         <button className="dateButton">{formatDate(task.dueDate)}</button>
@@ -141,6 +196,10 @@ TaskCard.propTypes = {
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
   }).isRequired,
+  isMenuOpen: PropTypes.bool.isRequired,
+  toggleMenu: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func.isRequired,
+  isAllChecklistsCollapsed: PropTypes.bool.isRequired, // Add this prop type
 };
 
 export default ToDo;

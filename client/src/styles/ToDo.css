@@ -1,3 +1,4 @@
+/* Existing styles */
 .containerHeading {
   margin-bottom: 40px;
 }
@@ -37,6 +38,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  position: relative; /* Add relative positioning */
 }
 
 .priorityTag {
@@ -96,4 +98,16 @@
 .statusButtons button {
   background-color: #EEECEC;
   color: #5A5A5A;
+}
+
+/* New styles for TaskMenu */
+.taskMenu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 1000;
 }
