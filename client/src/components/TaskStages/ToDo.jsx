@@ -107,6 +107,7 @@ function TaskCard({
   closeMenu,
   isAllChecklistsCollapsed,
 }) {
+  const [checklist, setChecklist] = useState(task.checklist); // State for task checklist
   const [isChecklistVisible, setIsChecklistVisible] = useState(
     !isAllChecklistsCollapsed
   ); // State for checklist visibility
@@ -137,6 +138,15 @@ function TaskCard({
     setIsChecklistVisible(!isChecklistVisible);
   };
 
+  const handleCheckboxChange = (index) => {
+    const newChecklist = [...checklist];
+    newChecklist[index].completed = !newChecklist[index].completed;
+    setChecklist(newChecklist);
+
+    // Optionally, you could also update the parent state here if needed
+    // For example: onUpdateTask(task._id, newChecklist);
+  };
+
   return (
     <div className="taskCard">
       <div className="taskHeader">
@@ -153,15 +163,21 @@ function TaskCard({
       <h3>{task.name}</h3>
       <div className="checklist">
         <h4 onClick={toggleChecklistVisibility} style={{ cursor: "pointer" }}>
-          Checklist ({task.checklist.filter((item) => item.completed).length}/
-          {task.checklist.length}){" "}
-          {isChecklistVisible ? <FaChevronUp /> : <FaChevronDown />}
+          Checklist ({checklist.filter((item) => item.completed).length}/
+          {checklist.length}){" "}
+          <div className="arrow">
+            {isChecklistVisible ? <FaChevronUp /> : <FaChevronDown />}
+          </div>
         </h4>
         {isChecklistVisible && (
           <div className="checklistItems">
-            {task.checklist.map((item, index) => (
+            {checklist.map((item, index) => (
               <div key={index} className="checklistItem">
-                <input type="checkbox" checked={item.completed} readOnly />
+                <input
+                  type="checkbox"
+                  checked={item.completed}
+                  onChange={() => handleCheckboxChange(index)}
+                />
                 <span>{item.text}</span>
               </div>
             ))}

@@ -57,6 +57,13 @@
   margin-top: 10px;
 }
 
+.arrow{
+  float: right;
+  background-color: #EEECEC;
+  padding: 5px 5px 0px 5px;
+  border-radius: 5px;
+}
+
 .checklistItems {
   margin-top: 10px;
 }
@@ -65,6 +72,9 @@
   display: flex;
   align-items: center;
   margin-bottom: 5px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  padding: 5px
 }
 
 .checklistItem input {
