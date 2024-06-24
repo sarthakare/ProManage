@@ -136,10 +136,16 @@ const saveTask = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
+    // Ensure each checklist item has the required fields
+    const validatedChecklist = checklist.map((item) => ({
+      text: item.text,
+      isChecked: item.isChecked !== undefined ? item.isChecked : false,
+    }));
+
     const newTask = new Task({
       name,
       priority,
-      checklist,
+      checklist: validatedChecklist,
       dueDate,
       userId: decoded.id,
     });
@@ -166,8 +172,8 @@ const savedTasks = async (req, res) => {
     const transformedTasks = tasks.map((task) => ({
       ...task._doc,
       checklist: task.checklist.map((item) => ({
-        text: item, // If item is originally a string
-        completed: false, // Set default or fetch real value
+        text: item,
+        completed: item.isChecked,
       })),
     }));
 

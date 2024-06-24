@@ -16,46 +16,59 @@
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  width: 500px;
+  width: 600px;
+  height: 550px;
   max-width: 90%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333333;
-}
-
-form {
+.taskPopupForm {
   display: flex;
   flex-direction: column;
 }
 
-.form-group {
+/* title group */
+.title-group {
   margin-bottom: 20px;
 }
 
-label {
+.taskTitle {
   font-size: 14px;
   color: #333333;
   margin-bottom: 8px;
   display: block;
 }
 
-label span {
+.taskTitle span {
   color: #ff0000;
 }
 
-input[type="text"] {
-  width: 100%;
+.titleInput {
+  width: 97%;
   padding: 10px;
   border: 1px solid #dddddd;
   border-radius: 5px;
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+/* priority group */
+.priority-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.priority-label {
+  font-size: 14px;
+  color: #333333;
+  margin: 8px;
+  display: block;
+}
+
+.priority-label span {
+  color: #ff0000;
 }
 
 .priority-options {
@@ -65,37 +78,57 @@ input[type="text"] {
 
 .priority-button {
   flex: 1;
+  margin-left: 10px;
   padding: 10px;
   border: 1px solid #dddddd;
   border-radius: 5px;
   background-color: #f9f9f9;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   margin-right: 10px;
   text-align: center;
 }
 
-.priority-button:last-child {
-  margin-right: 0;
+.priority-button.selected {
+  background-color: #dddddd;
+  color: #333333;
 }
 
-.priority-button.selected {
-  border-color: #007bff;
-  background-color: #007bff;
-  color: #ffffff;
+/* checklist items */
+.checkListContainer {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.checklist-label {
+  margin-bottom: 10px;
 }
 
 .checkListItems {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  font-size: 14px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-.checkListItems input {
+.checklistCheckbox {
+  width: 18px;
+  height: 18px;
+}
+.checklistInput {
   flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: none;
+  outline: none;
 }
 
-.checkListItems button {
+.deleteButton {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -104,50 +137,80 @@ input[type="text"] {
   font-size: 16px;
 }
 
-button[type="button"] {
-  padding: 10px 15px;
+.add-new-button {
+  display: flex;
+  margin: 10px;
+  padding: 5px 10px;
   font-size: 14px;
+  color: #767575;
+  background-color: transparent;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-button.add-new-button {
-  display: inline-block; /* Align Add New button properly */
-  padding: 5px 10px;
-  font-size: 14px;
-  color: #007bff;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+.add-new-button:hover {
+  border: 1px solid gray;
 }
 
-button.add-new-button:hover {
-  text-decoration: underline;
-}
-
-.cancel-button {
-  background-color: #ff4d4d;
-  color: #ffffff;
-}
-
-.save-button {
-  background-color: #007bff;
-  color: #ffffff;
-  margin-left: 10px;
-}
-
-.form-actions {
+/* Date picker */
+.footer-group {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  position: absolute;
+  bottom: 20px;
 }
 
 .due-date-picker {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #dddddd;
-  border-radius: 5px;
-  font-size: 14px;
+  width: 150px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid gray;
+  text-align: center;
+  cursor: pointer;
 }
 
+.due-date-picker:hover {
+  border: none;
+  color: black;
+  background-color: lightcyan;
+}
+
+/* cancel and save button */
+.form-actions {
+  margin-left: 100px;
+}
+
+/* Cancel button */
+.cancel-button {
+  width: 162.58px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid red;
+  color: red;
+  background-color: white;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  border: none;
+  color: white;
+  background-color: red;
+}
+
+/* Save button */
+.save-button {
+  width: 162.58px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  border: 1px solid #17a2b8;
+  color: #17a2b8;
+  background-color: white;
+}
