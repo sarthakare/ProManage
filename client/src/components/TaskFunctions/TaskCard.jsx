@@ -6,7 +6,13 @@ import "../../styles/TaskCard.css";
 import axios from "axios";
 
 function TaskCard({ task, isAllChecklistsCollapsed }) {
-  const [checklist, setChecklist] = useState(task.checklist);
+  // Initialize the state with the checklist items from the task prop
+  const [checklist, setChecklist] = useState(
+    task.checklist.map((item) => ({
+      ...item,
+      isChecked: item.isChecked ?? false,
+    }))
+  );
   const [isChecklistVisible, setIsChecklistVisible] = useState(
     !isAllChecklistsCollapsed
   );
@@ -17,6 +23,16 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   useEffect(() => {
     setIsChecklistVisible(!isAllChecklistsCollapsed);
   }, [isAllChecklistsCollapsed]);
+
+  useEffect(() => {
+    // Sync the state with the task prop whenever the task changes
+    setChecklist(
+      task.checklist.map((item) => ({
+        ...item,
+        isChecked: item.isChecked ?? false,
+      }))
+    );
+  }, [task]);
 
   const formatDate = (dateString) => {
     const options = { month: "short", day: "numeric" };
@@ -42,10 +58,19 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
 
   const updateChecklistInDatabase = async (updatedChecklist) => {
     try {
+      console.log(
+        "Updating checklist for task:",
+        task._id,
+        "with data:",
+        updatedChecklist
+      );
       const response = await axios.put("/updatechecklist", {
         taskId: task._id,
         checklist: updatedChecklist,
       });
+
+      // Log the raw response data from the server
+      console.log("Server response:", response);
 
       if (response.status !== 200) {
         throw new Error("Failed to update checklist");
@@ -57,7 +82,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
 
   const handleCheckboxChange = async (index) => {
     const newChecklist = [...checklist];
-    newChecklist[index].completed = !newChecklist[index].completed;
+    newChecklist[index].isChecked = !newChecklist[index].isChecked;
     setChecklist(newChecklist);
 
     await updateChecklistInDatabase(newChecklist);
@@ -111,7 +136,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
       )}
       <div className="checklist">
         <h4 onClick={toggleChecklistVisibility} style={{ cursor: "pointer" }}>
-          Checklist ({checklist.filter((item) => item.completed).length}/
+          Checklist ({checklist.filter((item) => item.isChecked).length}/
           {checklist.length}){" "}
           <div className="arrow">
             {isChecklistVisible ? <FaChevronUp /> : <FaChevronDown />}
@@ -152,7 +177,7 @@ TaskCard.propTypes = {
     checklist: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string.isRequired,
-        completed: PropTypes.bool.isRequired,
+        isChecked: PropTypes.bool,
       })
     ).isRequired,
     dueDate: PropTypes.string.isRequired,

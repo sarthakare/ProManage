@@ -196,11 +196,17 @@ const updateChecklist = async (req, res) => {
       return res.status(400).json({ error: "Invalid input data" });
     }
 
+    // Log received checklist for debugging
+    console.log("Received checklist:", checklist);
+
     // Ensure each checklist item has the required fields
     const validatedChecklist = checklist.map((item) => ({
       text: item.text,
-      completed: item.completed !== undefined ? item.completed : false,
+      isChecked: item.isChecked === true, // Ensure strict comparison
     }));
+
+    // Log transformed checklist for debugging
+    console.log("Transformed checklist:", validatedChecklist);
 
     const task = await Task.findOneAndUpdate(
       { _id: taskId, userId: decoded.id },
@@ -218,6 +224,7 @@ const updateChecklist = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 module.exports = {
   test,
