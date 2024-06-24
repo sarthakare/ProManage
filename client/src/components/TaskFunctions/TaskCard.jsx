@@ -148,7 +148,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
               <div key={index} className="checklistItem">
                 <input
                   type="checkbox"
-                  checked={item.completed}
+                  checked={item.isChecked}
                   onChange={() => handleCheckboxChange(index)}
                 />
                 <span>{item.text}</span>

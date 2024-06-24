@@ -173,7 +173,7 @@ const savedTasks = async (req, res) => {
       ...task._doc,
       checklist: task.checklist.map((item) => ({
         text: item,
-        completed: item.isChecked,
+        isChecked: item.isChecked,
       })),
     }));
 
