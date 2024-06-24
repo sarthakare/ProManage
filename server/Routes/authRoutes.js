@@ -10,6 +10,7 @@ const {
   saveTask,
   savedTasks,
   updateChecklist,
+  updateTaskStatus,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -27,5 +28,6 @@ router.put("/updateuser", updateUserProfile);
 router.post("/savetask", saveTask);
 router.get("/savedtasks", savedTasks);
 router.put("/updatechecklist", updateChecklist);
+router.put("/updatetaskstatus", updateTaskStatus);
 
 module.exports = router;

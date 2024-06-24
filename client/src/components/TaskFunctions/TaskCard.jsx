@@ -6,7 +6,6 @@ import "../../styles/TaskCard.css";
 import axios from "axios";
 
 function TaskCard({ task, isAllChecklistsCollapsed }) {
-  // Initialize the state with the checklist items from the task prop
   const [checklist, setChecklist] = useState(
     task.checklist.map((item) => ({
       ...item,
@@ -17,6 +16,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     !isAllChecklistsCollapsed
   );
   const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState(task.currentStatus); // Initialize with task's current status
 
   const taskOptionsRef = useRef(null);
 
@@ -25,13 +25,16 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   }, [isAllChecklistsCollapsed]);
 
   useEffect(() => {
-    // Sync the state with the task prop whenever the task changes
     setChecklist(
       task.checklist.map((item) => ({
         ...item,
         isChecked: item.isChecked ?? false,
       }))
     );
+  }, [task]);
+
+  useEffect(() => {
+    setCurrentStatus(task.currentStatus); // Sync currentStatus with task prop
   }, [task]);
 
   const formatDate = (dateString) => {
@@ -52,25 +55,22 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     }
   };
 
+  const isDeadlineMissed = (dueDate) => {
+    const currentDate = new Date();
+    const taskDueDate = new Date(dueDate);
+    return currentDate > taskDueDate;
+  };
+
   const toggleChecklistVisibility = () => {
     setIsChecklistVisible(!isChecklistVisible);
   };
 
   const updateChecklistInDatabase = async (updatedChecklist) => {
     try {
-      console.log(
-        "Updating checklist for task:",
-        task._id,
-        "with data:",
-        updatedChecklist
-      );
       const response = await axios.put("/updatechecklist", {
         taskId: task._id,
         checklist: updatedChecklist,
       });
-
-      // Log the raw response data from the server
-      console.log("Server response:", response);
 
       if (response.status !== 200) {
         throw new Error("Failed to update checklist");
@@ -109,9 +109,22 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Task data:", task);
-  }, [task]);
+  const updateTaskStatus = async (status) => {
+    try {
+      const response = await axios.put("/updateTaskStatus", {
+        taskId: task._id,
+        currentStatus: status,
+      });
+
+      if (response.status === 200) {
+        setCurrentStatus(status);
+      } else {
+        throw new Error("Failed to update task status");
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+  };
 
   return (
     <div className="taskCard">
@@ -158,11 +171,40 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
         )}
       </div>
       <div className="taskFooter">
-        <button className="dateButton">{formatDate(task.dueDate)}</button>
+        <button
+          className="dateButton"
+          style={{
+            backgroundColor: isDeadlineMissed(task.dueDate) ? "red" : "#dbdbdb",
+            color: isDeadlineMissed(task.dueDate) ? "white" : "#5a5a5a",
+          }}
+        >
+          {formatDate(task.dueDate)}
+        </button>
         <div className="statusButtons">
-          <button>Backlog</button>
-          <button>Progress</button>
-          <button>Done</button>
+          <button
+            onClick={() => updateTaskStatus("BACKLOG")}
+            style={{
+              backgroundColor: currentStatus === "BACKLOG" ? "#cccccc" : "",
+            }}
+          >
+            Backlog
+          </button>
+          <button
+            onClick={() => updateTaskStatus("PROGRESS")}
+            style={{
+              backgroundColor: currentStatus === "PROGRESS" ? "#cccccc" : "",
+            }}
+          >
+            Progress
+          </button>
+          <button
+            onClick={() => updateTaskStatus("DONE")}
+            style={{
+              backgroundColor: currentStatus === "DONE" ? "#cccccc" : "",
+            }}
+          >
+            Done
+          </button>
         </div>
       </div>
     </div>
@@ -184,6 +226,7 @@ TaskCard.propTypes = {
     userId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
+    currentStatus: PropTypes.string.isRequired, // Add currentStatus to PropTypes
   }).isRequired,
   isAllChecklistsCollapsed: PropTypes.bool.isRequired,
 };

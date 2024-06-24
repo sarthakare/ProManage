@@ -29,12 +29,17 @@ const taskSchema = new mongoose.Schema(
     },
     dueDate: {
       type: Date,
-      required: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    currentStatus: {
+      type: String,
+      required: true,
+      enum: ["TODO", "BACKLOG", "PROGRESS", "DONE"],
+      default: "TODO",
     },
   },
   {

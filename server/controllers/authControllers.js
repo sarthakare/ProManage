@@ -225,6 +225,40 @@ const updateChecklist = async (req, res) => {
   }
 };
 
+const updateTaskStatus = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { taskId, currentStatus } = req.body;
+
+    if (!taskId || !currentStatus) {
+      return res.status(400).json({ error: "Invalid input data" });
+    }
+
+    // Validate the current status
+    const validStatuses = ["TODO", "BACKLOG", "PROGRESS", "DONE"];
+    if (!validStatuses.includes(currentStatus)) {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    const task = await Task.findOneAndUpdate(
+      { _id: taskId, userId: decoded.id },
+      { currentStatus },
+      { new: true }
+    );
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    return res.json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   test,
@@ -234,5 +268,6 @@ module.exports = {
   updateUserProfile,
   saveTask,
   savedTasks,
-  updateChecklist, // Add the new function here
+  updateChecklist,
+  updateTaskStatus,
 };
