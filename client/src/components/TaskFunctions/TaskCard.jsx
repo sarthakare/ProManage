@@ -3,15 +3,16 @@ import PropTypes from "prop-types";
 import { FaCircle, FaChevronUp, FaChevronDown } from "react-icons/fa";
 import TaskMenu from "./TaskMenu";
 import "../../styles/TaskCard.css";
+import axios from "axios";
 
 function TaskCard({ task, isAllChecklistsCollapsed }) {
-  const [checklist, setChecklist] = useState(task.checklist); // State for task checklist
+  const [checklist, setChecklist] = useState(task.checklist);
   const [isChecklistVisible, setIsChecklistVisible] = useState(
     !isAllChecklistsCollapsed
   );
-  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false); // State for task menu
+  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
 
-  const taskOptionsRef = useRef(null); // Ref for task options element
+  const taskOptionsRef = useRef(null);
 
   useEffect(() => {
     setIsChecklistVisible(!isAllChecklistsCollapsed);
@@ -39,10 +40,27 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     setIsChecklistVisible(!isChecklistVisible);
   };
 
-  const handleCheckboxChange = (index) => {
+  const updateChecklistInDatabase = async (updatedChecklist) => {
+    try {
+      const response = await axios.put("/updatechecklist", {
+        taskId: task._id,
+        checklist: updatedChecklist,
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Failed to update checklist");
+      }
+    } catch (error) {
+      console.error("Error updating checklist:", error);
+    }
+  };
+
+  const handleCheckboxChange = async (index) => {
     const newChecklist = [...checklist];
     newChecklist[index].completed = !newChecklist[index].completed;
     setChecklist(newChecklist);
+
+    await updateChecklistInDatabase(newChecklist);
   };
 
   const toggleTaskOptionsMenu = () => {
@@ -50,7 +68,6 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   };
 
   const closeTaskMenu = (event) => {
-    // Close task menu if clicked outside
     if (
       taskOptionsRef.current &&
       !taskOptionsRef.current.contains(event.target)
@@ -67,7 +84,6 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     };
   }, []);
 
-  // Log the task data when the component renders
   useEffect(() => {
     console.log("Task data:", task);
   }, [task]);
@@ -77,8 +93,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
       <div className="taskHeader">
         <div className="priorityTag">
           <FaCircle style={{ color: getPriorityColor() }} />
-          &nbsp;
-          {task.priority}
+          &nbsp;{task.priority}
         </div>
         <div
           className="taskOptions"

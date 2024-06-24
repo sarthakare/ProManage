@@ -184,7 +184,40 @@ const savedTasks = async (req, res) => {
   }
 };
 
+const updateChecklist = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { taskId, checklist } = req.body;
+
+    if (!taskId || !Array.isArray(checklist)) {
+      return res.status(400).json({ error: "Invalid input data" });
+    }
+
+    // Ensure each checklist item has the required fields
+    const validatedChecklist = checklist.map((item) => ({
+      text: item.text,
+      completed: item.completed !== undefined ? item.completed : false,
+    }));
+
+    const task = await Task.findOneAndUpdate(
+      { _id: taskId, userId: decoded.id },
+      { checklist: validatedChecklist },
+      { new: true }
+    );
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    return res.json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   test,
@@ -194,4 +227,5 @@ module.exports = {
   updateUserProfile,
   saveTask,
   savedTasks,
+  updateChecklist, // Add the new function here
 };

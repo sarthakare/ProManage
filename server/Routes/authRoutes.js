@@ -9,6 +9,7 @@ const {
   updateUserProfile,
   saveTask,
   savedTasks,
+  updateChecklist,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -25,5 +26,6 @@ router.get("/profile", getProfile);
 router.put("/updateuser", updateUserProfile);
 router.post("/savetask", saveTask);
 router.get("/savedtasks", savedTasks);
+router.put("/updatechecklist", updateChecklist);
 
 module.exports = router;
