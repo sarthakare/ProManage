@@ -132,7 +132,7 @@ const saveTask = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { name, priority, checklist, dueDate } = req.body;
 
-    if (!name || !priority || !checklist || !dueDate) {
+    if (!name || !priority || !checklist) {
       return res.status(400).json({ error: "All fields are required" });
     }
 

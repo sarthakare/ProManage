@@ -183,15 +183,19 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
         )}
       </div>
       <div className="taskFooter">
-        <button
-          className="dateButton"
-          style={{
-            backgroundColor: isDeadlineMissed(task.dueDate) ? "red" : "#dbdbdb",
-            color: isDeadlineMissed(task.dueDate) ? "white" : "#5a5a5a",
-          }}
-        >
-          {formatDate(task.dueDate)}
-        </button>
+        {task.dueDate && (
+          <button
+            className="dateButton"
+            style={{
+              backgroundColor: isDeadlineMissed(task.dueDate)
+                ? "red"
+                : "#dbdbdb",
+              color: isDeadlineMissed(task.dueDate) ? "white" : "#5a5a5a",
+            }}
+          >
+            {formatDate(task.dueDate)}
+          </button>
+        )}
         <div className="statusButtons">
           {remainingStatuses.map((status) => (
             <button
@@ -222,7 +226,7 @@ TaskCard.propTypes = {
         isChecked: PropTypes.bool,
       })
     ).isRequired,
-    dueDate: PropTypes.string.isRequired,
+    dueDate: PropTypes.string,
     userId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
