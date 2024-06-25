@@ -260,6 +260,29 @@ const updateTaskStatus = async (req, res) => {
   }
 };
 
+const allTasksDetails = async (req, res) => {
+  try {
+    // Fetch all tasks from the database
+    const tasks = await Task.find();
+
+    // Ensure checklist items are objects
+    const transformedTasks = tasks.map((task) => ({
+      ...task._doc,
+      checklist: task.checklist.map((item) => ({
+        text: item.text,
+        isChecked: item.isChecked,
+      })),
+    }));
+
+    // Return the transformed task data as a JSON response
+    res.json(transformedTasks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 module.exports = {
   test,
   registerUser,
@@ -270,4 +293,5 @@ module.exports = {
   savedTasks,
   updateChecklist,
   updateTaskStatus,
+  allTasksDetails,
 };

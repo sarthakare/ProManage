@@ -11,6 +11,7 @@ const {
   savedTasks,
   updateChecklist,
   updateTaskStatus,
+  allTasksDetails,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -29,5 +30,6 @@ router.post("/savetask", saveTask);
 router.get("/savedtasks", savedTasks);
 router.put("/updatechecklist", updateChecklist);
 router.put("/updatetaskstatus", updateTaskStatus);
+router.get("/alltasksdetails", allTasksDetails);
 
 module.exports = router;
