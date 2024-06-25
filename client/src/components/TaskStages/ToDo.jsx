@@ -32,13 +32,15 @@ function ToDo() {
         },
         withCredentials: true,
       });
-      const transformedTasks = response.data.map((task) => ({
-        ...task,
-        checklist: task.checklist.map((item) => ({
-          ...item,
-          text: item.text.text, // Extracting the string value from the nested object
-        })),
-      }));
+      const transformedTasks = response.data
+        .filter((task) => task.currentStatus === "TODO") // Filter tasks with currentStatus as 'done'
+        .map((task) => ({
+          ...task,
+          checklist: task.checklist.map((item) => ({
+            ...item,
+            text: item.text.text, // Extracting the string value from the nested object
+          })),
+        }));
       setTasks(transformedTasks);
       console.log("Tasks fetched successfully:", transformedTasks);
     } catch (error) {

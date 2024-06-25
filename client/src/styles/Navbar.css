@@ -18,6 +18,7 @@ body {
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
+  z-index: 1000;
 }
 
 .navbar-header {

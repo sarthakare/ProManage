@@ -238,7 +238,7 @@ const updateTaskStatus = async (req, res) => {
     }
 
     // Validate the current status
-    const validStatuses = ["TODO", "BACKLOG", "PROGRESS", "DONE"];
+    const validStatuses = ["TODO", "BACKLOG", "INPROGRESS", "DONE"];
     if (!validStatuses.includes(currentStatus)) {
       return res.status(400).json({ error: "Invalid status value" });
     }

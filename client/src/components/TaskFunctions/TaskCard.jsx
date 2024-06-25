@@ -118,6 +118,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
 
       if (response.status === 200) {
         setCurrentStatus(status);
+        window.location.reload(); // Reload the window after status update
       } else {
         throw new Error("Failed to update task status");
       }
@@ -190,9 +191,9 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
             Backlog
           </button>
           <button
-            onClick={() => updateTaskStatus("PROGRESS")}
+            onClick={() => updateTaskStatus("INPROGRESS")}
             style={{
-              backgroundColor: currentStatus === "PROGRESS" ? "#cccccc" : "",
+              backgroundColor: currentStatus === "INPROGRESS" ? "#cccccc" : "",
             }}
           >
             Progress
