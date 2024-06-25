@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import { VscCollapseAll } from "react-icons/vsc";
 import { IoAdd } from "react-icons/io5";
 import axios from "axios";
@@ -7,7 +8,7 @@ import "../../styles/ToDo.css";
 import TaskCard from "../TaskFunctions/TaskCard";
 import toast from "react-hot-toast";
 
-function ToDo() {
+function ToDo({ selectedOption }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [openTaskMenuId, setOpenTaskMenuId] = useState(null);
@@ -16,40 +17,62 @@ function ToDo() {
   const taskMenuRef = useRef(null);
 
   useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get("/savedtasks", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        const filteredTasks = response.data
+          .filter((task) => {
+            const taskDate = new Date(task.createdAt);
+            const now = new Date();
+            if (selectedOption === "today") {
+              return (
+                taskDate.getDate() === now.getDate() &&
+                taskDate.getMonth() === now.getMonth() &&
+                taskDate.getFullYear() === now.getFullYear()
+              );
+            } else if (selectedOption === "thisWeek") {
+              const oneWeekAgo = new Date(now);
+              oneWeekAgo.setDate(now.getDate() - 7);
+              return taskDate >= oneWeekAgo;
+            } else if (selectedOption === "thisMonth") {
+              const oneMonthAgo = new Date(now);
+              oneMonthAgo.setDate(now.getDate() - 30);
+              return taskDate >= oneMonthAgo;
+            }
+            return true;
+          })
+          .filter((task) => task.currentStatus === "TODO")
+          .map((task) => ({
+            ...task,
+            checklist: task.checklist.map((item) => ({
+              ...item,
+              text: item.text.text,
+            })),
+          }));
+
+        setTasks(filteredTasks);
+        console.log("Tasks fetched successfully:", filteredTasks);
+      } catch (error) {
+        toast.error("Error fetching tasks");
+        if (error.response) {
+          toast.error(`Server response: ${error.response.data}`);
+        }
+      }
+    };
+
     fetchTasks();
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get("/savedtasks", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      const transformedTasks = response.data
-        .filter((task) => task.currentStatus === "TODO") // Filter tasks with currentStatus as 'todo'
-        .map((task) => ({
-          ...task,
-          checklist: task.checklist.map((item) => ({
-            ...item,
-            text: item.text.text, // Extracting the string value from the nested object
-          })),
-        }));
-      setTasks(transformedTasks);
-      console.log("Tasks fetched successfully:", transformedTasks);
-    } catch (error) {
-      toast.error("Error fetching tasks");
-      if (error.response) {
-        toast.error(`Server response: ${error.response.data}`);
-      }
-    }
-  };
+  }, [selectedOption]);
 
   const handleAddTask = () => {
     setIsPopupOpen(true);
@@ -61,7 +84,6 @@ function ToDo() {
 
   const handleSaveTask = () => {
     setIsPopupOpen(false);
-    fetchTasks();
   };
 
   const handleClickOutside = (event) => {
@@ -107,5 +129,10 @@ function ToDo() {
     </div>
   );
 }
+
+// Add prop types validation
+ToDo.propTypes = {
+  selectedOption: PropTypes.string.isRequired,
+};
 
 export default ToDo;

@@ -30,6 +30,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
         setPriority("");
         setChecklist([]);
         setDueDate(null); // Reset dueDate to null
+        window.location.reload();
       } else {
         // Handle error response from the server
         toast.error("Error saving task:", response.data);

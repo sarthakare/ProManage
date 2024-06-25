@@ -10,12 +10,6 @@ function Board() {
   const { user } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState("");
   const [selectedOption, setSelectedOption] = useState("thisWeek");
-  const [tasks, setTasks] = useState({
-    backlog: [],
-    todo: [],
-    inProgress: [],
-    done: [],
-  });
 
   useEffect(() => {
     const formatDate = (date) => {
@@ -45,17 +39,6 @@ function Board() {
     setSelectedOption(event.target.value);
   };
 
-  const moveTask = (taskId, from, to) => {
-    setTasks((prevState) => {
-      const taskToMove = prevState[from].find((task) => task.id === taskId);
-      return {
-        ...prevState,
-        [from]: prevState[from].filter((task) => task.id !== taskId),
-        [to]: [...prevState[to], taskToMove],
-      };
-    });
-  };
-
   return (
     <div className="board">
       <div className="headingContainer">
@@ -77,10 +60,10 @@ function Board() {
         </div>
       </div>
       <div className="taskContainer">
-        <Backlog tasks={tasks.backlog} moveTask={moveTask} />
-        <ToDo tasks={tasks.todo} moveTask={moveTask} />
-        <InProgress tasks={tasks.inProgress} moveTask={moveTask} />
-        <Done tasks={tasks.done} />
+        <Backlog selectedOption={selectedOption} />
+        <ToDo selectedOption={selectedOption} />
+        <InProgress selectedOption={selectedOption} />
+        <Done selectedOption={selectedOption} />
       </div>
     </div>
   );
