@@ -1,5 +1,4 @@
-// Navbar.jsx
-
+import { useState } from "react";
 import "../styles/Navbar.css";
 import {
   NavLink,
@@ -16,9 +15,19 @@ import logout from "../assets/Logout.png";
 
 function Navbar() {
   const navigate = useNavigate();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutDialog(false);
     navigate("/login");
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutDialog(false);
   };
 
   const CustomNavLink = ({ to, icon, label }) => {
@@ -49,10 +58,7 @@ function Navbar() {
       <nav className="navbar-nav">
         <ul>
           <li>
-            <CustomNavLink 
-            to="/home/board" 
-            icon={layout} 
-            label="Board" />
+            <CustomNavLink to="/home/board" icon={layout} label="Board" />
           </li>
           <li>
             <CustomNavLink
@@ -71,10 +77,20 @@ function Navbar() {
         </ul>
       </nav>
       <div className="navbar-logout">
-        <h3 onClick={handleLogout}>
+        <h3 onClick={handleLogoutClick}>
           <img src={logout} alt="logout icon" /> LOGOUT
         </h3>
       </div>
+      {showLogoutDialog && (
+        <div className="logout-dialog">
+          <div className="logout-dialog-content">
+            <h4>Are you sure you want to Logout?</h4>
+            <button className="logoutBtn" onClick={handleLogoutConfirm}>Yes, Logout</button>
+            <br />
+            <button className="cancelBtn" onClick={handleLogoutCancel}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
