@@ -33,7 +33,7 @@ function ToDo() {
         withCredentials: true,
       });
       const transformedTasks = response.data
-        .filter((task) => task.currentStatus === "TODO") // Filter tasks with currentStatus as 'done'
+        .filter((task) => task.currentStatus === "TODO") // Filter tasks with currentStatus as 'todo'
         .map((task) => ({
           ...task,
           checklist: task.checklist.map((item) => ({

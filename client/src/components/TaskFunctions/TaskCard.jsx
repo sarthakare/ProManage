@@ -127,6 +127,17 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     }
   };
 
+  const statuses = [
+    { label: "Backlog", value: "BACKLOG" },
+    { label: "To Do", value: "TODO" },
+    { label: "In Progress", value: "INPROGRESS" },
+    { label: "Done", value: "DONE" },
+  ];
+
+  const remainingStatuses = statuses.filter(
+    (status) => status.value !== currentStatus
+  );
+
   return (
     <div className="taskCard">
       <div className="taskHeader">
@@ -182,30 +193,18 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
           {formatDate(task.dueDate)}
         </button>
         <div className="statusButtons">
-          <button
-            onClick={() => updateTaskStatus("BACKLOG")}
-            style={{
-              backgroundColor: currentStatus === "BACKLOG" ? "#cccccc" : "",
-            }}
-          >
-            Backlog
-          </button>
-          <button
-            onClick={() => updateTaskStatus("INPROGRESS")}
-            style={{
-              backgroundColor: currentStatus === "INPROGRESS" ? "#cccccc" : "",
-            }}
-          >
-            Progress
-          </button>
-          <button
-            onClick={() => updateTaskStatus("DONE")}
-            style={{
-              backgroundColor: currentStatus === "DONE" ? "#cccccc" : "",
-            }}
-          >
-            Done
-          </button>
+          {remainingStatuses.map((status) => (
+            <button
+              key={status.value}
+              onClick={() => updateTaskStatus(status.value)}
+              style={{
+                backgroundColor:
+                  currentStatus === status.value ? "#cccccc" : "",
+              }}
+            >
+              {status.label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
