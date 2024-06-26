@@ -282,6 +282,28 @@ const allTasksDetails = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  try {
+    const { taskId } = req.params; // Extract taskId from URL params
+
+    if (!taskId) {
+      return res.status(400).json({ error: "Task ID is required" });
+    }
+
+    // Assuming Task is your Mongoose model for tasks
+    const deletedTask = await Task.findByIdAndDelete(taskId);
+
+    if (!deletedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 module.exports = {
   test,
@@ -294,4 +316,5 @@ module.exports = {
   updateChecklist,
   updateTaskStatus,
   allTasksDetails,
+  deleteTask
 };

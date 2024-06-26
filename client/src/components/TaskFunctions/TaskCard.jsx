@@ -16,9 +16,10 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     !isAllChecklistsCollapsed
   );
   const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState(task.currentStatus); // Initialize with task's current status
+  const [currentStatus, setCurrentStatus] = useState(task.currentStatus);
 
   const taskOptionsRef = useRef(null);
+  const taskMenuRef = useRef(null);
 
   useEffect(() => {
     setIsChecklistVisible(!isAllChecklistsCollapsed);
@@ -34,7 +35,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   }, [task]);
 
   useEffect(() => {
-    setCurrentStatus(task.currentStatus); // Sync currentStatus with task prop
+    setCurrentStatus(task.currentStatus);
   }, [task]);
 
   const formatDate = (dateString) => {
@@ -88,12 +89,15 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     await updateChecklistInDatabase(newChecklist);
   };
 
-  const toggleTaskOptionsMenu = () => {
+  const toggleTaskOptionsMenu = (e) => {
+    e.stopPropagation(); // Prevent the event from propagating to the document
     setIsTaskMenuOpen(!isTaskMenuOpen);
   };
 
   const closeTaskMenu = (event) => {
     if (
+      taskMenuRef.current &&
+      !taskMenuRef.current.contains(event.target) &&
       taskOptionsRef.current &&
       !taskOptionsRef.current.contains(event.target)
     ) {
@@ -103,7 +107,6 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
 
   useEffect(() => {
     document.addEventListener("mousedown", closeTaskMenu);
-
     return () => {
       document.removeEventListener("mousedown", closeTaskMenu);
     };
@@ -111,14 +114,13 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
 
   const updateTaskStatus = async (status) => {
     try {
-      const response = await axios.put("/updateTaskStatus", {
+      const response = await axios.put("/updatetaskstatus", {
         taskId: task._id,
         currentStatus: status,
       });
-
       if (response.status === 200) {
         setCurrentStatus(status);
-        window.location.reload(); // Reload the window after status update
+        window.location.reload();
       } else {
         throw new Error("Failed to update task status");
       }
@@ -155,8 +157,8 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
       </div>
       <h3>{task.name}</h3>
       {isTaskMenuOpen && (
-        <div className="taskMenuWrapper">
-          <TaskMenu task={task} />
+        <div className="taskMenuWrapper" ref={taskMenuRef}>
+          <TaskMenu taskId={task._id} />
         </div>
       )}
       <div className="checklist">
@@ -230,7 +232,7 @@ TaskCard.propTypes = {
     userId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
-    currentStatus: PropTypes.string.isRequired, // Add currentStatus to PropTypes
+    currentStatus: PropTypes.string.isRequired,
   }).isRequired,
   isAllChecklistsCollapsed: PropTypes.bool.isRequired,
 };
