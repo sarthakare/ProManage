@@ -14,6 +14,24 @@ function TaskPopup({ isOpen, onClose, onSave }) {
   const [dueDate, setDueDate] = useState(null);
 
   const handleSave = async () => {
+    // Validation checks
+    if (!taskName) {
+      toast.error("Task title is required");
+      return;
+    }
+    if (!priority) {
+      toast.error("Task priority is required");
+      return;
+    }
+    if (checklist.length === 0) {
+      toast.error("Checklist cannot be empty");
+      return;
+    }
+    if (checklist.some((item) => !item.text)) {
+      toast.error("All checklist items must have text");
+      return;
+    }
+
     const newTask = {
       id: new Date().toISOString(),
       name: taskName,

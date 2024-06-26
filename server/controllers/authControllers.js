@@ -133,7 +133,7 @@ const saveTask = async (req, res) => {
     const { name, priority, checklist, dueDate } = req.body;
 
     if (!name || !priority || !checklist) {
-      return res.status(400).json({ error: "All fields are required" });
+      return res.json({ error: "All fields are required" });
     }
 
     // Ensure each checklist item has the required fields
