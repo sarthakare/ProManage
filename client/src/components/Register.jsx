@@ -4,12 +4,17 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Art from "../assets/Art.png";
+import { CiUser, CiLock, CiMail } from "react-icons/ci";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "", // Added confirmPassword to the state
   });
 
   const registerUser = async (e) => {
@@ -29,8 +34,13 @@ function Register() {
       if (data.error) {
         toast.error(data.error);
       } else {
-        setData({});
-        toast.success("Login Sucessfull.");
+        setData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "", // Clear confirmPassword
+        });
+        toast.success("Registration successful.");
         navigate("/home/board");
       }
     } catch (error) {
@@ -42,6 +52,15 @@ function Register() {
   function goToLogin() {
     navigate("/");
   }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className="register">
       <div className="webInfo">
@@ -54,6 +73,7 @@ function Register() {
       <form onSubmit={registerUser} className="userInfo">
         <h1 className="title">Register</h1>
         <div className="userInput">
+          <CiUser className="icon" />
           <input
             type="text"
             placeholder="Name"
@@ -62,6 +82,7 @@ function Register() {
           />
         </div>
         <div className="userInput">
+          <CiMail className="icon" />
           <input
             type="email"
             placeholder="Email"
@@ -70,28 +91,49 @@ function Register() {
           />
         </div>
         <div className="userInput">
+          <CiLock className="icon" />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"} // Toggle input type
             placeholder="Password"
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
           />
+          {showPassword ? (
+            <IoEyeOffOutline
+              className="icon"
+              onClick={togglePasswordVisibility}
+            />
+          ) : (
+            <IoEyeOutline className="icon" onClick={togglePasswordVisibility} />
+          )}
         </div>
         <div className="userInput">
+          <CiLock className="icon" />
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"} // Toggle input type
             placeholder="Confirm Password"
             value={data.confirmPassword}
             onChange={(e) =>
               setData({ ...data, confirmPassword: e.target.value })
             }
           />
+          {showConfirmPassword ? (
+            <IoEyeOffOutline
+              className="icon"
+              onClick={toggleConfirmPasswordVisibility}
+            />
+          ) : (
+            <IoEyeOutline
+              className="icon"
+              onClick={toggleConfirmPasswordVisibility}
+            />
+          )}
         </div>
         <button className="btn1" type="submit">
           Register
         </button>
         <h5 className="noAccountText">Have an account ?</h5>
-        <button className="btn2" onClick={goToLogin}>
+        <button className="btn2" type="button" onClick={goToLogin}>
           Log in
         </button>
       </form>

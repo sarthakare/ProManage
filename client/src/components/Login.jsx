@@ -3,9 +3,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { toast } from "react-hot-toast";
-import Art from "../assets/Art.png"
+import Art from "../assets/Art.png";
+import { CiLock, CiMail } from "react-icons/ci";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+
 
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -35,6 +39,11 @@ function Login() {
   function goToRegister() {
     navigate("/Register");
   }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="login">
       <div className="webInfo">
@@ -47,6 +56,7 @@ function Login() {
       <form onSubmit={loginUser} className="userInfo">
         <h1 className="title">Login</h1>
         <div className="userInput">
+          <CiMail className="icon" />
           <input
             type="email"
             placeholder="Email"
@@ -55,12 +65,21 @@ function Login() {
           />
         </div>
         <div className="userInput">
+          <CiLock className="icon" />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
           />
+          {showPassword ? (
+            <IoEyeOffOutline
+              className="icon"
+              onClick={togglePasswordVisibility}
+            />
+          ) : (
+            <IoEyeOutline className="icon" onClick={togglePasswordVisibility} />
+          )}
         </div>
         <button className="btn1" type="submit">
           Log in

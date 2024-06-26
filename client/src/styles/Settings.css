@@ -3,23 +3,40 @@
   padding-right: 20px;
 }
 
-.userInfoSettings input {
-  width: 50%;
+.userInfoSettings {
+  width: 40%;
   height: 30px;
   border-radius: 11px;
   margin-bottom: 20px;
+  border: 2px solid black;
   border-color: #d0d0d0;
   font-size: medium;
   padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.userInfoSettings input{
+  width: 500px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border: none;
+  outline: none;
+}
+
+.userInfoSettings .icon{
+  font-size: 24px;
 }
 
 .update {
   background-color: #17a2b8;
   color: #ffffff;
   border-color: #ffffff;
-  width: 50%;
+  width: 40%;
   height: 40px;
   border-radius: 16px;
   font-size: medium;
   
 }
+
+

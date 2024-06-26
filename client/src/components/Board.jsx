@@ -49,7 +49,7 @@ function Board() {
           <div className="dateContainer">{currentDate}</div>
         </div>
         <div className="bottomRow">
-          <h1>Board Page</h1>
+          <h1 className="componentHeading">Board Page</h1>
           <div className="ddl">
             <select value={selectedOption} onChange={handleOptionChange}>
               <option value="today">Today</option>

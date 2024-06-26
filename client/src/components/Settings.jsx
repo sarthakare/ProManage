@@ -1,9 +1,11 @@
 import "../styles/Settings.css";
 import { useContext, useState, useEffect } from "react";
-import { UserContext } from "../../contex/userContext";
+import { UserContext } from "../../contex/userContext.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { CiUser, CiLock, CiMail } from "react-icons/ci";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 function Settings() {
   const { user, setUser } = useContext(UserContext);
@@ -11,6 +13,8 @@ function Settings() {
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,10 +38,8 @@ function Settings() {
       if (response.status === 200) {
         setUser(response.data);
         toast.success("User information updated successfully");
-        // Clear sensitive data from state
         setOldPassword("");
         setNewPassword("");
-        // Navigate after update
         navigate("/login");
       } else {
         toast.error("Failed to update user information");
@@ -51,11 +53,20 @@ function Settings() {
     }
   };
 
+  const toggleOldPasswordVisibility = () => {
+    setShowOldPassword(!showOldPassword);
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
   return (
     <div className="settings">
       <h2>Settings</h2>
       <form onSubmit={handleUpdate} className="userDetails">
         <div className="userInfoSettings">
+          <CiUser className="icon" />
           <input
             type="text"
             placeholder="Name"
@@ -64,6 +75,7 @@ function Settings() {
           />
         </div>
         <div className="userInfoSettings">
+          <CiMail className="icon" />
           <input
             type="text"
             placeholder="Email"
@@ -72,20 +84,44 @@ function Settings() {
           />
         </div>
         <div className="userInfoSettings">
+          <CiLock className="icon" />
           <input
-            type="password"
+            type={showOldPassword ? "text" : "password"}
             placeholder="Old Password"
             value={oldPassword}
             onChange={(e) => setOldPassword(e.target.value)}
           />
+          {showOldPassword ? (
+            <IoEyeOffOutline
+              className="icon"
+              onClick={toggleOldPasswordVisibility}
+            />
+          ) : (
+            <IoEyeOutline
+              className="icon"
+              onClick={toggleOldPasswordVisibility}
+            />
+          )}
         </div>
         <div className="userInfoSettings">
+          <CiLock className="icon" />
           <input
-            type="password"
+            type={showNewPassword ? "text" : "password"}
             placeholder="New Password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
+          {showNewPassword ? (
+            <IoEyeOffOutline
+              className="icon"
+              onClick={toggleNewPasswordVisibility}
+            />
+          ) : (
+            <IoEyeOutline
+              className="icon"
+              onClick={toggleNewPasswordVisibility}
+            />
+          )}
         </div>
         <div className="updateBtn">
           <button className="update" type="submit">
