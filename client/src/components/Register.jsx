@@ -41,7 +41,7 @@ function Register() {
           confirmPassword: "", // Clear confirmPassword
         });
         toast.success("Registration successful.");
-        navigate("/home/board");
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
@@ -108,7 +108,7 @@ function Register() {
           )}
         </div>
         <div className="userInput">
-          <CiLock className="icon" />
+          <CiLock className="icon"/>
           <input
             type={showConfirmPassword ? "text" : "password"} // Toggle input type
             placeholder="Confirm Password"

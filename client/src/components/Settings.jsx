@@ -93,12 +93,12 @@ function Settings() {
           />
           {showOldPassword ? (
             <IoEyeOffOutline
-              className="icon"
+              className="eyeIcon"
               onClick={toggleOldPasswordVisibility}
             />
           ) : (
             <IoEyeOutline
-              className="icon"
+              className="eyeIcon"
               onClick={toggleOldPasswordVisibility}
             />
           )}
@@ -113,12 +113,12 @@ function Settings() {
           />
           {showNewPassword ? (
             <IoEyeOffOutline
-              className="icon"
+              className="eyeIcon"
               onClick={toggleNewPasswordVisibility}
             />
           ) : (
             <IoEyeOutline
-              className="icon"
+              className="eyeIcon"
               onClick={toggleNewPasswordVisibility}
             />
           )}

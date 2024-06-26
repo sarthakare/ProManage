@@ -28,6 +28,11 @@
   font-size: 24px;
 }
 
+.userInfoSettings .eyeIcon{
+  font-size: 24px;
+  cursor: pointer;
+}
+
 .update {
   background-color: #17a2b8;
   color: #ffffff;
@@ -36,7 +41,7 @@
   height: 40px;
   border-radius: 16px;
   font-size: medium;
-  
+  cursor: pointer;
 }
 
 

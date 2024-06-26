@@ -63,7 +63,7 @@ body {
   transition: background-color 0.3s;
 }
 
-.nav-link img {
+.nav-icon{
   width: 24px;
   height: 24px;
   margin-right: 10px;
@@ -136,7 +136,7 @@ body {
 
 .logoutBtn:hover{
   background-color: #CF3636;
-  color: #CF3636;
+  color: #FFFFFF;
   border: 2px solid #CF3636;
 }
 
