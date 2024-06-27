@@ -304,6 +304,28 @@ const deleteTask = async (req, res) => {
   }
 };
 
+const getTask = async (req, res) => {
+  try {
+    const { taskId } = req.params; // Extract taskId from URL params
+
+    if (!taskId) {
+      return res.status(400).json({ error: "Task ID is required" });
+    }
+
+    // Fetch task from database by taskId
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.json(task); // Return the task as JSON response
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 module.exports = {
   test,
@@ -316,5 +338,6 @@ module.exports = {
   updateChecklist,
   updateTaskStatus,
   allTasksDetails,
-  deleteTask
+  deleteTask,
+  getTask
 };

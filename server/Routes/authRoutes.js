@@ -13,6 +13,7 @@ const {
   updateTaskStatus,
   allTasksDetails,
   deleteTask,
+  getTask,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -33,6 +34,6 @@ router.put("/updatechecklist", updateChecklist);
 router.put("/updatetaskstatus", updateTaskStatus);
 router.get("/alltasksdetails", allTasksDetails);
 router.delete("/deletetask/:taskId", deleteTask);
-
+router.get("/gettask/:taskId", getTask); // Corrected route parameter
 
 module.exports = router;

@@ -2,8 +2,11 @@ import PropTypes from "prop-types";
 import "../../styles/TaskMenu.css";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useState } from "react";
+import TaskPopupEdit from "./TaskPopupEdit"; // Make sure to adjust the import path
 
 function TaskMenu({ task }) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const taskId = task._id;
 
   console.log("Received task:", task);
@@ -23,13 +26,22 @@ function TaskMenu({ task }) {
     }
   };
 
+  const handleEdit = () => {
+    setIsPopupOpen(true);
+  };
+
   return (
     <div className="taskMenu">
-    <button className="edit">Edit</button>
-    <button className="share">Share</button>
+      <button className="edit" onClick={handleEdit}>
+        Edit
+      </button>
+      <button className="share">Share</button>
       <button onClick={handleDelete} className="delete">
         Delete
       </button>
+      {isPopupOpen && (
+        <TaskPopupEdit taskId={taskId} onClose={() => setIsPopupOpen(false)} />
+      )}
     </div>
   );
 }
