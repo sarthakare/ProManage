@@ -326,6 +326,45 @@ const getTask = async (req, res) => {
   }
 };
 
+const editTaskData = async (req, res) => {
+  const taskId = req.params.id; // Ensure to use 'id' here
+  const { name, priority, checklist, dueDate } = req.body;
+
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Validate input data
+    if (!name || !priority || !checklist) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Find the task by ID and ensure it belongs to the authenticated user
+    const task = await Task.findOne({ _id: taskId, userId: decoded.id });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // Update the task
+    task.name = name;
+    task.priority = priority;
+    task.checklist = checklist;
+    task.dueDate = dueDate;
+
+    const updatedTask = await task.save();
+
+    // Send the updated task as a response
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).json({ message: "Error updating task" });
+  }
+};
+
+
+
 
 module.exports = {
   test,
@@ -339,5 +378,6 @@ module.exports = {
   updateTaskStatus,
   allTasksDetails,
   deleteTask,
-  getTask
+  getTask,
+  editTaskData,
 };

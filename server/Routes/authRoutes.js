@@ -14,6 +14,7 @@ const {
   allTasksDetails,
   deleteTask,
   getTask,
+  editTaskData,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -34,6 +35,7 @@ router.put("/updatechecklist", updateChecklist);
 router.put("/updatetaskstatus", updateTaskStatus);
 router.get("/alltasksdetails", allTasksDetails);
 router.delete("/deletetask/:taskId", deleteTask);
-router.get("/gettask/:taskId", getTask); // Corrected route parameter
+router.get("/gettask/:taskId", getTask);
+router.put("/edittaskdata/:id", editTaskData);
 
 module.exports = router;

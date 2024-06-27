@@ -30,6 +30,14 @@ function TaskMenu({ task }) {
     setIsPopupOpen(true);
   };
 
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleSaveTask = () => {
+    setIsPopupOpen(false);
+  };
+
   return (
     <div className="taskMenu">
       <button className="edit" onClick={handleEdit}>
@@ -40,7 +48,11 @@ function TaskMenu({ task }) {
         Delete
       </button>
       {isPopupOpen && (
-        <TaskPopupEdit taskId={taskId} onClose={() => setIsPopupOpen(false)} />
+        <TaskPopupEdit
+          taskId={taskId}
+          onClose={handleClosePopup}
+          onSave={handleSaveTask}
+        />
       )}
     </div>
   );

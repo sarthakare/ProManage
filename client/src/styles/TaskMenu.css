@@ -1,4 +1,4 @@
-.taskMenu button {
+.edit, .share, .delete {
   display: block;
   width: 100%;
   padding: 8px 16px;
