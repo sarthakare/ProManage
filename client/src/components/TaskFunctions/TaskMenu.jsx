@@ -38,12 +38,26 @@ function TaskMenu({ task }) {
     setIsPopupOpen(false);
   };
 
+  const handleShare = () => {
+    const link = `${window.location.origin}/viewtask/${taskId}`;
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        toast.success("link copied to clipboard.");
+      })
+      .catch(() => {
+        toast.error("Failed to copy link to clipboard.");
+      });
+  };
+
   return (
     <div className="taskMenu">
       <button className="edit" onClick={handleEdit}>
         Edit
       </button>
-      <button className="share">Share</button>
+      <button className="share" onClick={handleShare}>
+        Share
+      </button>
       <button onClick={handleDelete} className="delete">
         Delete
       </button>
