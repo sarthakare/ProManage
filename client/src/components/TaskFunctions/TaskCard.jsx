@@ -189,10 +189,16 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
           <button
             className="dateButton"
             style={{
-              backgroundColor: isDeadlineMissed(task.dueDate)
-                ? "red"
-                : "#dbdbdb",
-              color: isDeadlineMissed(task.dueDate) ? "white" : "#5a5a5a",
+              backgroundColor:
+                currentStatus === "DONE"
+                  ? "green"
+                  : isDeadlineMissed(task.dueDate)
+                  ? "red"
+                  : "#dbdbdb",
+              color:
+                currentStatus === "DONE" || isDeadlineMissed(task.dueDate)
+                  ? "white"
+                  : "#5a5a5a",
             }}
           >
             {formatDate(task.dueDate)}
