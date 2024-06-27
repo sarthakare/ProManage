@@ -158,7 +158,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
       <h3>{task.name}</h3>
       {isTaskMenuOpen && (
         <div className="taskMenuWrapper" ref={taskMenuRef}>
-          <TaskMenu taskId={task._id} />
+          <TaskMenu task={task} />
         </div>
       )}
       <div className="checklist">
