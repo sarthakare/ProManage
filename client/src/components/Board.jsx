@@ -5,11 +5,14 @@ import Backlog from "./TaskStages/Backlog";
 import ToDo from "./TaskStages/ToDo";
 import InProgress from "./TaskStages/Inprogress";
 import Done from "./TaskStages/Done";
+import AddPeople from "./TaskFunctions/AddPeople";
+import { GoPeople } from "react-icons/go";
 
 function Board() {
   const { user } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState("");
   const [selectedOption, setSelectedOption] = useState("thisWeek");
+  const [isAddPeoplePopupOpen, setIsAddPeoplePopupOpen] = useState(false);
 
   useEffect(() => {
     const formatDate = (date) => {
@@ -39,6 +42,14 @@ function Board() {
     setSelectedOption(event.target.value);
   };
 
+  const openAddPeoplePopup = () => {
+    setIsAddPeoplePopupOpen(true);
+  };
+
+  const closeAddPeoplePopup = () => {
+    setIsAddPeoplePopupOpen(false);
+  };
+
   return (
     <div className="board">
       <div className="headingContainer">
@@ -49,7 +60,12 @@ function Board() {
           <div className="dateContainer">{currentDate}</div>
         </div>
         <div className="bottomRow">
-          <h1 className="componentHeading">Board Page</h1>
+          <h1 className="componentHeading">
+            Board Page{" "}
+            <button className="add-people-button" onClick={openAddPeoplePopup}>
+              <GoPeople className="addPeopleIcon" /> Add People
+            </button>
+          </h1>
           <div className="ddl">
             <select value={selectedOption} onChange={handleOptionChange}>
               <option value="today">Today</option>
@@ -65,6 +81,7 @@ function Board() {
         <InProgress selectedOption={selectedOption} />
         <Done selectedOption={selectedOption} />
       </div>
+      {isAddPeoplePopupOpen && <AddPeople onClose={closeAddPeoplePopup} />}
     </div>
   );
 }

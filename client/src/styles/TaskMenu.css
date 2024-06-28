@@ -8,7 +8,7 @@
   text-align: left;
 }
 
-.taskMenu button:hover {
+.edit:hover, .delete:hover, .share:hover {
   background-color: #f0f0f0;
 }
 

@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Task = require("../models/task");
+const AssignUser = require("../models/assignUsers");
 const { hashPassword, comparePassword } = require("../helper/auth");
 const jwt = require('jsonwebtoken');
 
@@ -381,6 +382,20 @@ const viewTask = async (req, res) => {
   }
 };
 
+const assignUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const newUser = new AssignUser({ email });
+    await newUser.save();
+    res
+      .status(201)
+      .json({ message: "User assigned successfully", user: newUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 module.exports = {
   test,
@@ -397,4 +412,5 @@ module.exports = {
   getTask,
   editTaskData,
   viewTask,
+  assignUser,
 };
