@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import logo from "../assets/codesandbox.png";
 import "../styles/ViewTask.css";
 import { FaCircle } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 
 function ViewTask() {
   const { taskId } = useParams();
@@ -76,6 +77,10 @@ function ViewTask() {
     return `${month} ${day}${daySuffix}`;
   };
 
+  const checkListClick = () =>{
+    toast.error("Public Page. Read Only!")
+  }
+
   return (
     <div className="viewTask">
       <div className="webHeading">
@@ -92,7 +97,7 @@ function ViewTask() {
           <h4>
             Checklist ({checkedCount}/{task.checklist.length})
           </h4>
-          <ul>
+          <ul onClick={checkListClick}>
             {task.checklist.map((item, index) => (
               <li key={index}>
                 <input type="checkbox" checked={item.isChecked} readOnly />{" "}
