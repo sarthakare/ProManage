@@ -23,7 +23,7 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
           setTaskName(taskData.name);
           setPriority(taskData.priority);
           setChecklist(taskData.checklist);
-          setDueDate(new Date(taskData.dueDate));
+          setDueDate(taskData.dueDate ? new Date(taskData.dueDate) : null);
         } else {
           toast.error("Failed to fetch task data.");
         }
@@ -101,7 +101,6 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
       toast.error("Error updating task.");
     }
   };
-
 
   const checkedCount = checklist.filter((item) => item.isChecked).length;
 

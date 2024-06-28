@@ -15,6 +15,7 @@ const {
   deleteTask,
   getTask,
   editTaskData,
+  viewTask,
 } = require("../controllers/authControllers");
 
 router.use(
@@ -37,5 +38,6 @@ router.get("/alltasksdetails", allTasksDetails);
 router.delete("/deletetask/:taskId", deleteTask);
 router.get("/gettask/:taskId", getTask);
 router.put("/edittaskdata/:id", editTaskData);
+router.get("/viewtask/:taskId", viewTask);
 
 module.exports = router;

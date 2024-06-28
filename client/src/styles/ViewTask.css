@@ -1,0 +1,49 @@
+.webHeading {
+  display: flex;
+  align-items: center;
+}
+
+.webHeading img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.taskView {
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  z-index: 1;
+  background-color: white;
+  width: 50vw;
+  max-height: 55vh;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.priority{
+    font-size: 14px;
+}
+
+.taskView ul{
+    list-style: none;
+    max-height: 30vh;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.taskView li{
+    border: 2px solid lightgray;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 12px;
+}
+
+.date{
+    background-color: red;
+    color: white;
+    width: max-content;
+    padding: 5px;
+    border-radius: 8px;
+}

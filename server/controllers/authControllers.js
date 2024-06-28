@@ -363,7 +363,23 @@ const editTaskData = async (req, res) => {
   }
 };
 
+const viewTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
 
+    // Fetch the task without checking for the token
+    const task = await Task.findOne({ _id: taskId });
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.json(task);
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
 module.exports = {
@@ -380,4 +396,5 @@ module.exports = {
   deleteTask,
   getTask,
   editTaskData,
+  viewTask,
 };

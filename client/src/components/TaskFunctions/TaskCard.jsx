@@ -39,8 +39,30 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   }, [task]);
 
   const formatDate = (dateString) => {
-    const options = { month: "short", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" });
+
+    let daySuffix;
+    if (day > 3 && day < 21) {
+      daySuffix = "th";
+    } else {
+      switch (day % 10) {
+        case 1:
+          daySuffix = "st";
+          break;
+        case 2:
+          daySuffix = "nd";
+          break;
+        case 3:
+          daySuffix = "rd";
+          break;
+        default:
+          daySuffix = "th";
+      }
+    }
+
+    return `${month} ${day}${daySuffix}`;
   };
 
   const getPriorityColor = () => {
@@ -140,6 +162,10 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
     (status) => status.value !== currentStatus
   );
 
+  const truncateText = (text, length) => {
+    return text.length > length ? `${text.substring(0, length)}...` : text;
+  };
+
   return (
     <div className="taskCard">
       <div className="taskHeader">
@@ -155,7 +181,7 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
           ...
         </div>
       </div>
-      <h3>{task.name}</h3>
+      <h3 title={task.name}>{truncateText(task.name, 10)}</h3>
       {isTaskMenuOpen && (
         <div className="taskMenuWrapper" ref={taskMenuRef}>
           <TaskMenu task={task} />
