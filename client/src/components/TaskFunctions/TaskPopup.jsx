@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/TaskPopup.css";
 import { FaCircle, FaTrash } from "react-icons/fa";
+import { format } from "date-fns";
 
 function TaskPopup({ isOpen, onClose, onSave }) {
   const [taskName, setTaskName] = useState("");
@@ -32,12 +33,14 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       return;
     }
 
+    const formattedDueDate = dueDate ? format(dueDate, "dd/MM/yyyy") : null;
+
     const newTask = {
       id: new Date().toISOString(),
       name: taskName,
       priority,
       checklist,
-      dueDate,
+      dueDate: formattedDueDate,
     };
 
     try {
@@ -182,7 +185,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
             <DatePicker
               selected={dueDate}
               onChange={(date) => setDueDate(date)}
-              dateFormat="yyyy/MM/dd"
+              dateFormat="dd/MM/yyyy"
               placeholderText="Select Due Date"
               className="due-date-picker"
             />
