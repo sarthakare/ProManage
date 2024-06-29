@@ -131,7 +131,9 @@ const saveTask = async (req, res) => {
     if (!token) return res.status(401).json({ error: "Unauthorized" });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { name, priority, checklist, dueDate } = req.body;
+    const { name, priority, checklist, dueDate, assignedUsers } = req.body;
+
+    console.log("Received task data:", req.body);
 
     if (!name || !priority || !checklist) {
       return res.json({ error: "All fields are required" });
@@ -143,12 +145,22 @@ const saveTask = async (req, res) => {
       isChecked: item.isChecked !== undefined ? item.isChecked : false,
     }));
 
+    // Parse the dueDate string to a Date object
+    const parsedDueDate = dueDate
+      ? new Date(dueDate.split("/").reverse().join("-"))
+      : null;
+
+    if (dueDate && isNaN(parsedDueDate)) {
+      return res.status(400).json({ error: "Invalid date format" });
+    }
+
     const newTask = new Task({
       name,
       priority,
       checklist: validatedChecklist,
-      dueDate,
+      dueDate: parsedDueDate,
       userId: decoded.id,
+      assignedUsers: assignedUsers || [],
     });
 
     const savedTask = await newTask.save();
@@ -158,6 +170,7 @@ const saveTask = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 const savedTasks = async (req, res) => {
   try {

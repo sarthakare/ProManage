@@ -61,8 +61,10 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       priority,
       checklist,
       dueDate: formattedDueDate,
-      assignedUsers: selectedUsers,
+      assignedUsers: selectedUsers.map((user) => user.email),
     };
+
+    console.log("Task data being saved:", newTask);
 
     try {
       const response = await axios.post("/savetask", newTask);
@@ -71,7 +73,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
         setTaskName("");
         setPriority("");
         setChecklist([]);
-        setDueDate(null); 
+        setDueDate(null);
         setSelectedUsers([]);
         window.location.reload();
       } else {

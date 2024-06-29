@@ -35,6 +35,10 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    assignedUsers: {
+      type: [String],
+      required: false,
+    },
     currentStatus: {
       type: String,
       required: true,
