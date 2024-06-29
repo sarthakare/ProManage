@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import DatePicker from "react-datepicker";
@@ -13,6 +13,26 @@ function TaskPopup({ isOpen, onClose, onSave }) {
   const [priority, setPriority] = useState("");
   const [checklist, setChecklist] = useState([]);
   const [dueDate, setDueDate] = useState(null);
+  const [assignedUsers, setAssignedUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchAssignedUsers = async () => {
+      try {
+        const response = await axios.get(
+          "/getassignedusers"
+        );
+        if (response.status === 200) {
+          setAssignedUsers(response.data);
+        } else {
+          console.error("Failed to fetch assigned users");
+        }
+      } catch (error) {
+        console.error("Error fetching assigned users:", error);
+      }
+    };
+
+    fetchAssignedUsers();
+  }, []);
 
   const handleSave = async () => {
     // Validation checks
@@ -201,6 +221,16 @@ function TaskPopup({ isOpen, onClose, onSave }) {
                 Save
               </button>
             </div>
+          </div>
+          <div className="assigned-users-group">
+            <label className="assigned-users-label">Assigned Users</label>
+            <ul className="assigned-users-list">
+              {assignedUsers.map((user) => (
+                <li key={user._id} className="assigned-user-item">
+                  {user.email}
+                </li>
+              ))}
+            </ul>
           </div>
         </form>
       </div>
