@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/TaskPopup.css";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaTrash, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { format } from "date-fns";
 
 function TaskPopup({ isOpen, onClose, onSave }) {
@@ -14,13 +14,13 @@ function TaskPopup({ isOpen, onClose, onSave }) {
   const [checklist, setChecklist] = useState([]);
   const [dueDate, setDueDate] = useState(null);
   const [assignedUsers, setAssignedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchAssignedUsers = async () => {
       try {
-        const response = await axios.get(
-          "/getassignedusers"
-        );
+        const response = await axios.get("/getassignedusers");
         if (response.status === 200) {
           setAssignedUsers(response.data);
         } else {
@@ -61,6 +61,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       priority,
       checklist,
       dueDate: formattedDueDate,
+      assignedUsers: selectedUsers,
     };
 
     try {
@@ -70,7 +71,8 @@ function TaskPopup({ isOpen, onClose, onSave }) {
         setTaskName("");
         setPriority("");
         setChecklist([]);
-        setDueDate(null); // Reset dueDate to null
+        setDueDate(null); 
+        setSelectedUsers([]);
         window.location.reload();
       } else {
         // Handle error response from the server
@@ -79,6 +81,20 @@ function TaskPopup({ isOpen, onClose, onSave }) {
     } catch (error) {
       toast.error("Error saving task:", error);
     }
+  };
+
+  const handleAssignUser = (user) => {
+    setSelectedUsers((prevSelectedUsers) => {
+      if (prevSelectedUsers.includes(user)) {
+        return prevSelectedUsers.filter((u) => u !== user);
+      } else {
+        return [...prevSelectedUsers, user];
+      }
+    });
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   if (!isOpen) {
@@ -161,6 +177,46 @@ function TaskPopup({ isOpen, onClose, onSave }) {
               </button>
             </div>
           </div>
+          {assignedUsers.length > 0 && (
+            <div className="assigned-users-group">
+              <label className="assigned-users-label">Assigned Users</label>
+              <div className="dropdown">
+                <button
+                  type="button"
+                  className="dropdown-button"
+                  onClick={toggleDropdown}
+                >
+                  Add a assignee
+                  {dropdownOpen ? (
+                    <FaChevronUp className="dropIcon" />
+                  ) : (
+                    <FaChevronDown className="dropIcon" />
+                  )}
+                </button>
+                {dropdownOpen && (
+                  <ul className="dropdown-list">
+                    {assignedUsers.map((user) => (
+                      <li key={user._id} className="dropdown-item">
+                        <div className="email-initials">
+                          {user.email.slice(0, 2).toUpperCase()}
+                        </div>
+                        <span>{user.email}</span>
+                        <button
+                          type="button"
+                          className={`assign-button ${
+                            selectedUsers.includes(user) ? "assigned" : ""
+                          }`}
+                          onClick={() => handleAssignUser(user)}
+                        >
+                          {selectedUsers.includes(user) ? "Assigned" : "Assign"}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
           <div className="checklist-group">
             <label className="checklist-label">
               Checklist ({checkedCount}/{checklist.length}) <span>*</span>
@@ -221,16 +277,6 @@ function TaskPopup({ isOpen, onClose, onSave }) {
                 Save
               </button>
             </div>
-          </div>
-          <div className="assigned-users-group">
-            <label className="assigned-users-label">Assigned Users</label>
-            <ul className="assigned-users-list">
-              {assignedUsers.map((user) => (
-                <li key={user._id} className="assigned-user-item">
-                  {user.email}
-                </li>
-              ))}
-            </ul>
           </div>
         </form>
       </div>

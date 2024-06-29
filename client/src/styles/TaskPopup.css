@@ -94,6 +94,68 @@
   color: #333333;
 }
 
+/* Assigned user */
+.assigned-users-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.assigned-users-label {
+  margin-right: 20px;
+}
+
+.dropdown-button {
+  width: 450px;
+  height: 30px;
+  outline: none;
+  background-color: white;
+  border: 2px solid #dddddd;
+  border-radius: 5px;
+}
+
+.dropIcon {
+  float: right;
+  color: #333333;
+}
+
+.dropdown-list {
+  list-style: none;
+  overflow-y: auto;
+  max-height: 200px;
+  margin: 0px;
+  position: absolute;
+  top: calc(dropdown); /* Adjust this value as needed */
+  width: 64%; /* Ensure the dropdown is as wide as the parent container */
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.dropdown-item {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.email-initials {
+  background-color: #ffebeb;
+  padding: 7px;
+  border-radius: 50%;
+}
+
+.assign-button {
+  margin-right: 40px;
+  background-color: white;
+  padding: 5px 20px 5px 20px;
+  border-radius: 12px;
+  border: 2px solid #e2e2e2;
+  cursor: pointer;
+}
+
 /* checklist items */
 .checkListContainer {
   overflow-y: auto;

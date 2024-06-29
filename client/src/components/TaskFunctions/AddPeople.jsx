@@ -32,6 +32,7 @@ function AddPeople({ onClose }) {
     setEmail("");
     setEmailAdded(false);
     onClose();
+    window.location.reload();
   };
 
   return (
