@@ -52,10 +52,6 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       toast.error("All checklist items must have text");
       return;
     }
-    if (!selectedUser) {
-      toast.error("You must assign a user to the task");
-      return;
-    }
 
     const formattedDueDate = dueDate ? format(dueDate, "dd/MM/yyyy") : null;
 
@@ -65,7 +61,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       priority,
       checklist,
       dueDate: formattedDueDate,
-      assignedUsers: [selectedUser.email], // Changed to an array
+      assignedUsers: selectedUser ? [selectedUser.email] : [], // Assign empty array if no user is selected
     };
 
     // Log the data being saved
@@ -90,7 +86,6 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       toast.error(`Error saving task: ${error.message}`);
     }
   };
-
 
   const handleAssignUser = (user) => {
     setSelectedUser(user);

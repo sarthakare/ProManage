@@ -169,9 +169,21 @@ function TaskCard({ task, isAllChecklistsCollapsed }) {
   return (
     <div className="taskCard">
       <div className="taskHeader">
-        <div className="priorityTag">
-          <FaCircle style={{ color: getPriorityColor() }} />
-          &nbsp;{task.priority}
+        <div className="priorityAndUser">
+          <div className="priorityTag">
+            <FaCircle style={{ color: getPriorityColor() }} />
+            &nbsp;{task.priority}
+          </div>
+          {task.assignedUsers && task.assignedUsers.length > 0 ? (
+            <div className="assignUser">
+              <div className="assignUserEmail">
+                {task.assignedUsers[0].slice(0, 2).toUpperCase()}
+                <span className="fullEmail">{task.assignedUsers[0]}</span>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div
           className="taskOptions"
@@ -265,6 +277,7 @@ TaskCard.propTypes = {
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
     currentStatus: PropTypes.string.isRequired,
+    assignedUsers: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   isAllChecklistsCollapsed: PropTypes.bool.isRequired,
 };
