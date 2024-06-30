@@ -133,8 +133,6 @@ const saveTask = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { name, priority, checklist, dueDate, assignedUsers } = req.body;
 
-    console.log("Received task data:", req.body);
-
     if (!name || !priority || !checklist) {
       return res.json({ error: "All fields are required" });
     }
@@ -342,7 +340,7 @@ const getTask = async (req, res) => {
 
 const editTaskData = async (req, res) => {
   const taskId = req.params.id; // Ensure to use 'id' here
-  const { name, priority, checklist, dueDate } = req.body;
+  const { name, priority, checklist, dueDate, assignUser } = req.body;
 
   try {
     const { token } = req.cookies;
@@ -366,6 +364,7 @@ const editTaskData = async (req, res) => {
     task.priority = priority;
     task.checklist = checklist;
     task.dueDate = dueDate;
+    task.assignedUsers = assignUser;
 
     const updatedTask = await task.save();
 

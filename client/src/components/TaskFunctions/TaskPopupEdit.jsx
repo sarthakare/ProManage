@@ -5,13 +5,17 @@ import { toast } from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/TaskPopup.css";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaTrash, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 function TaskPopupEdit({ taskId, onClose, onSave }) {
   const [taskName, setTaskName] = useState("");
   const [priority, setPriority] = useState("");
   const [checklist, setChecklist] = useState([]);
   const [dueDate, setDueDate] = useState(null);
+  const [assignUser, setAssignUser] = useState(null);
+  const [assignedUser, setAssignedUser] = useState([]);
+  const [allAssignUserList, setAllAssignUserList] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchTaskData = async () => {
@@ -23,9 +27,16 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
           setTaskName(taskData.name);
           setPriority(taskData.priority);
           setChecklist(taskData.checklist);
+          setAssignedUser(taskData.assignedUsers);
           setDueDate(taskData.dueDate ? new Date(taskData.dueDate) : null);
         } else {
           toast.error("Failed to fetch task data.");
+        }
+        const addedUsers = await axios.get(`/getassignedusers`);
+        if (addedUsers.status === 200) {
+          setAllAssignUserList(addedUsers.data);
+        } else {
+          console.error("Failed to fetch assigned users");
         }
       } catch (error) {
         console.error("Error fetching task data:", error);
@@ -83,6 +94,7 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
       priority,
       checklist,
       dueDate,
+      assignUser,
     };
 
     try {
@@ -103,6 +115,16 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
   };
 
   const checkedCount = checklist.filter((item) => item.isChecked).length;
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleAssignUser = (user) => {
+    setAssignUser(user);
+    setAssignedUser(user);
+    setDropdownOpen(false);
+  };
 
   return (
     <div className="popup">
@@ -155,6 +177,46 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
               </button>
             </div>
           </div>
+          {allAssignUserList.length > 0 && (
+            <div className="assigned-users-group">
+              <label className="assigned-users-label">Assign to</label>
+              <div className="dropdown">
+                <button
+                  type="button"
+                  className="dropdown-button"
+                  onClick={toggleDropdown}
+                >
+                  {assignedUser.length > 0 ? assignedUser : "Add an assignee"}
+                  {dropdownOpen ? (
+                    <FaChevronUp className="dropIcon" />
+                  ) : (
+                    <FaChevronDown className="dropIcon" />
+                  )}
+                </button>
+                {dropdownOpen && (
+                  <ul className="dropdown-list">
+                    {allAssignUserList.map((user) => (
+                      <li key={user._id} className="dropdown-item">
+                        <div className="email-initials">
+                          {user.email.slice(0, 2).toUpperCase()}
+                        </div>
+                        <span>{user.email}</span>
+                        <button
+                          type="button"
+                          className={`assign-button ${
+                            assignedUser == user.email ? "assigned" : ""
+                          }`}
+                          onClick={() => handleAssignUser(user.email)}
+                        >
+                          {assignedUser == user.email ? "Assigned" : "Assign"}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
           <div className="checklist-group">
             <label className="checklist-label">
               Checklist ({checkedCount}/{checklist.length}) <span>*</span>

@@ -89,7 +89,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
 
   const handleAssignUser = (user) => {
     setSelectedUser(user);
-    setDropdownOpen(false); // Close the dropdown after selection
+    setDropdownOpen(false); 
   };
 
   const toggleDropdown = () => {
@@ -178,7 +178,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
           </div>
           {assignedUsers.length > 0 && (
             <div className="assigned-users-group">
-              <label className="assigned-users-label">Assigned User</label>
+              <label className="assigned-users-label">Assign to</label>
               <div className="dropdown">
                 <button
                   type="button"
