@@ -14,7 +14,7 @@ function TaskPopup({ isOpen, onClose, onSave }) {
   const [checklist, setChecklist] = useState([]);
   const [dueDate, setDueDate] = useState(null);
   const [assignedUsers, setAssignedUsers] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -52,6 +52,10 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       toast.error("All checklist items must have text");
       return;
     }
+    if (!selectedUser) {
+      toast.error("You must assign a user to the task");
+      return;
+    }
 
     const formattedDueDate = dueDate ? format(dueDate, "dd/MM/yyyy") : null;
 
@@ -61,9 +65,10 @@ function TaskPopup({ isOpen, onClose, onSave }) {
       priority,
       checklist,
       dueDate: formattedDueDate,
-      assignedUsers: selectedUsers.map((user) => user.email),
+      assignedUsers: [selectedUser.email], // Changed to an array
     };
 
+    // Log the data being saved
     console.log("Task data being saved:", newTask);
 
     try {
@@ -74,25 +79,22 @@ function TaskPopup({ isOpen, onClose, onSave }) {
         setPriority("");
         setChecklist([]);
         setDueDate(null);
-        setSelectedUsers([]);
+        setSelectedUser(null);
+        toast.success("Task saved successfully");
         window.location.reload();
       } else {
         // Handle error response from the server
-        toast.error("Error saving task:", response.data);
+        toast.error(`Error saving task: ${response.data}`);
       }
     } catch (error) {
-      toast.error("Error saving task:", error);
+      toast.error(`Error saving task: ${error.message}`);
     }
   };
 
+
   const handleAssignUser = (user) => {
-    setSelectedUsers((prevSelectedUsers) => {
-      if (prevSelectedUsers.includes(user)) {
-        return prevSelectedUsers.filter((u) => u !== user);
-      } else {
-        return [...prevSelectedUsers, user];
-      }
-    });
+    setSelectedUser(user);
+    setDropdownOpen(false); // Close the dropdown after selection
   };
 
   const toggleDropdown = () => {
@@ -181,14 +183,14 @@ function TaskPopup({ isOpen, onClose, onSave }) {
           </div>
           {assignedUsers.length > 0 && (
             <div className="assigned-users-group">
-              <label className="assigned-users-label">Assigned Users</label>
+              <label className="assigned-users-label">Assigned User</label>
               <div className="dropdown">
                 <button
                   type="button"
                   className="dropdown-button"
                   onClick={toggleDropdown}
                 >
-                  Add a assignee
+                  {selectedUser ? selectedUser.email : "Add an assignee"}
                   {dropdownOpen ? (
                     <FaChevronUp className="dropIcon" />
                   ) : (
@@ -206,11 +208,15 @@ function TaskPopup({ isOpen, onClose, onSave }) {
                         <button
                           type="button"
                           className={`assign-button ${
-                            selectedUsers.includes(user) ? "assigned" : ""
+                            selectedUser && selectedUser._id === user._id
+                              ? "assigned"
+                              : ""
                           }`}
                           onClick={() => handleAssignUser(user)}
                         >
-                          {selectedUsers.includes(user) ? "Assigned" : "Assign"}
+                          {selectedUser && selectedUser._id === user._id
+                            ? "Assigned"
+                            : "Assign"}
                         </button>
                       </li>
                     ))}
