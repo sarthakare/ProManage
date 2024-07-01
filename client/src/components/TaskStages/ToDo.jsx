@@ -48,7 +48,7 @@ function ToDo({ selectedOption, user, tasks }) {
           ...task,
           checklist: task.checklist.map((item) => ({
             ...item,
-            text: item.text ? item.text.text : "", // Ensure text is defined
+            text: item.text ? item.text : "", // Ensure text is defined
           })),
         }));
 
@@ -92,16 +92,18 @@ function ToDo({ selectedOption, user, tasks }) {
         />
       </div>
       <div className="toDoTasks">
-        {filteredTasks.map((task) => (
-          <div key={task._id} ref={taskMenuRef}>
-            <TaskCard
-              task={task}
-              openTaskMenuId={openTaskMenuId}
-              toggleTaskMenu={toggleTaskMenu}
-              isAllChecklistsCollapsed={isAllChecklistsCollapsed}
-            />
-          </div>
-        ))}
+        {filteredTasks.map((task) => {
+          return (
+            <div key={task._id} ref={taskMenuRef}>
+              <TaskCard
+                task={task}
+                openTaskMenuId={openTaskMenuId}
+                toggleTaskMenu={toggleTaskMenu}
+                isAllChecklistsCollapsed={isAllChecklistsCollapsed}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

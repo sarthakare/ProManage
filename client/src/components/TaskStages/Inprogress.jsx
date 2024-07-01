@@ -47,7 +47,7 @@ function Inprogress({ selectedOption, user, tasks }) {
           ...task,
           checklist: task.checklist.map((item) => ({
             ...item,
-            text: item.text ? item.text.text : "", // Ensure text is defined
+            text: item.text ? item.text : "", // Ensure text is defined
           })),
         }));
 
