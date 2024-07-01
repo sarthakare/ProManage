@@ -6,21 +6,18 @@ import Analytics from "./Analytics";
 import Settings from "./Settings";
 import "../styles/Navbar.css";
 import "../styles/Home.css";
-import { UserContextProvider } from "../../contex/userContext";
 
 function Home() {
   return (
     <div className="home-container">
       <Navbar />
-      <UserContextProvider>
-        <div className="mainContent">
-          <Routes>
-            <Route path="board" element={<Board />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="settings" element={<Settings />} />
-          </Routes>
-        </div>
-      </UserContextProvider>
+      <div className="mainContent">
+        <Routes>
+          <Route path="board" element={<Board />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
+        </Routes>
+      </div>
     </div>
   );
 }

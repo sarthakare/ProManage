@@ -178,13 +178,13 @@ const savedTasks = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Fetch tasks from the database for the logged-in user
-    const tasks = await Task.find({});
+    const tasks = await Task.find({ userId: decoded.userId });
 
     // Ensure checklist items are objects
     const transformedTasks = tasks.map((task) => ({
       ...task._doc,
       checklist: task.checklist.map((item) => ({
-        text: item,
+        text: item.text,
         isChecked: item.isChecked,
       })),
     }));

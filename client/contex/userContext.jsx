@@ -1,33 +1,35 @@
-import axios from "axios";
+// userContext.jsx
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 export const UserContext = createContext({});
 
-export function UserContextProvider({ children }) {
+export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/profile");
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
     if (!user) {
-      axios
-        .get("/profile")
-        .then(({ data }) => {
-          setUser(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user profile:", error);
-        });
+      fetchUser();
     }
   }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      {children}
+      {children} {/* Render children here */}
     </UserContext.Provider>
   );
-}
+};
 
-// Define prop types for UserContextProvider
 UserContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired, // Validate children prop
 };

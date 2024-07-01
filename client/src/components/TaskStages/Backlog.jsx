@@ -1,77 +1,60 @@
 import { useEffect, useState, useRef } from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import { VscCollapseAll } from "react-icons/vsc";
-import axios from "axios";
 import TaskPopup from "../TaskFunctions/TaskPopup";
 import "../../styles/ToDo.css";
 import TaskCard from "../TaskFunctions/TaskCard";
-import toast from "react-hot-toast";
 
-function Backlog({ selectedOption }) {
+function Backlog({ selectedOption, user, tasks }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [openTaskMenuId, setOpenTaskMenuId] = useState(null);
   const [isAllChecklistsCollapsed, setIsAllChecklistsCollapsed] =
     useState(true);
   const taskMenuRef = useRef(null);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get("/savedtasks", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
+    if (user && tasks.length > 0) {
+      const now = new Date();
 
-        const filteredTasks = response.data
-          .filter((task) => {
-            const taskDate = new Date(task.createdAt);
-            const now = new Date();
-            if (selectedOption === "today") {
-              return (
-                taskDate.getDate() === now.getDate() &&
-                taskDate.getMonth() === now.getMonth() &&
-                taskDate.getFullYear() === now.getFullYear()
-              );
-            } else if (selectedOption === "thisWeek") {
-              const oneWeekAgo = new Date(now);
-              oneWeekAgo.setDate(now.getDate() - 7);
-              return taskDate >= oneWeekAgo;
-            } else if (selectedOption === "thisMonth") {
-              const oneMonthAgo = new Date(now);
-              oneMonthAgo.setDate(now.getDate() - 30);
-              return taskDate >= oneMonthAgo;
-            }
-            return true;
-          })
-          .filter((task) => task.currentStatus === "BACKLOG")
-          .map((task) => ({
-            ...task,
-            checklist: task.checklist.map((item) => ({
-              ...item,
-              text: item.text.text,
-            })),
-          }));
+      const filtered = tasks
+        .filter((task) => {
+          const taskDate = new Date(task.createdAt);
 
-        setTasks(filteredTasks);
-        console.log("Tasks fetched successfully:", filteredTasks);
-      } catch (error) {
-        toast.error("Error fetching tasks");
-        if (error.response) {
-          toast.error(`Server response: ${error.response.data}`);
-        }
-      }
-    };
+          if (selectedOption === "today") {
+            return (
+              taskDate.getDate() === now.getDate() &&
+              taskDate.getMonth() === now.getMonth() &&
+              taskDate.getFullYear() === now.getFullYear()
+            );
+          } else if (selectedOption === "thisWeek") {
+            const oneWeekAgo = new Date(now);
+            oneWeekAgo.setDate(now.getDate() - 7);
+            return taskDate >= oneWeekAgo;
+          } else if (selectedOption === "thisMonth") {
+            const oneMonthAgo = new Date(now);
+            oneMonthAgo.setDate(now.getDate() - 30);
+            return taskDate >= oneMonthAgo;
+          }
+          return true;
+        })
+        .filter(
+          (task) =>
+            task.currentStatus === "BACKLOG" &&
+            (task.userId === user.id || task.assignedUsers.includes(user.email))
+        )
+        .map((task) => ({
+          ...task,
+          checklist: task.checklist.map((item) => ({
+            ...item,
+            text: item.text ? item.text.text : "", // Ensure text is defined
+          })),
+        }));
 
-    fetchTasks();
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [selectedOption]);
+      setFilteredTasks(filtered);
+      console.log("Tasks filtered successfully:", filtered);
+    }
+  }, [selectedOption, user, tasks]);
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -79,12 +62,6 @@ function Backlog({ selectedOption }) {
 
   const handleSaveTask = () => {
     setIsPopupOpen(false);
-  };
-
-  const handleClickOutside = (event) => {
-    if (taskMenuRef.current && !taskMenuRef.current.contains(event.target)) {
-      setOpenTaskMenuId(null);
-    }
   };
 
   const toggleTaskMenu = (taskId) => {
@@ -109,7 +86,7 @@ function Backlog({ selectedOption }) {
         />
       </div>
       <div className="toDoTasks">
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <div key={task._id} ref={taskMenuRef}>
             <TaskCard
               task={task}
@@ -127,6 +104,8 @@ function Backlog({ selectedOption }) {
 // Add prop types validation
 Backlog.propTypes = {
   selectedOption: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
+  tasks: PropTypes.array.isRequired,
 };
 
 export default Backlog;
