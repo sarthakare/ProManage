@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from "prop-types"; // Import PropTypes
 import { VscCollapseAll } from "react-icons/vsc";
 import { IoAdd } from "react-icons/io5";
@@ -7,8 +7,10 @@ import TaskPopup from "../TaskFunctions/TaskPopup";
 import "../../styles/ToDo.css";
 import TaskCard from "../TaskFunctions/TaskCard";
 import toast from "react-hot-toast";
+import { UserContext } from "../../../contex/userContext.jsx";
 
 function ToDo({ selectedOption }) {
+  const { user } = useContext(UserContext);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [openTaskMenuId, setOpenTaskMenuId] = useState(null);
@@ -25,7 +27,6 @@ function ToDo({ selectedOption }) {
           },
           withCredentials: true,
         });
-
         const filteredTasks = response.data
           .filter((task) => {
             const taskDate = new Date(task.createdAt);
@@ -48,6 +49,9 @@ function ToDo({ selectedOption }) {
             return true;
           })
           .filter((task) => task.currentStatus === "TODO")
+          .filter(
+            (task) => task.userId === user.id || task.assignedUsers[0] === user.email
+          ) // Filter tasks by user ID
           .map((task) => ({
             ...task,
             checklist: task.checklist.map((item) => ({
@@ -59,7 +63,7 @@ function ToDo({ selectedOption }) {
         setTasks(filteredTasks);
         console.log("Tasks fetched successfully:", filteredTasks);
       } catch (error) {
-        toast.error("Error fetching tasks");
+        toast.error("Error fetching tasks : todo");
         if (error.response) {
           toast.error(`Server response: ${error.response.data}`);
         }
@@ -72,7 +76,7 @@ function ToDo({ selectedOption }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedOption]);
+  }, [selectedOption, user]);
 
   const handleAddTask = () => {
     setIsPopupOpen(true);

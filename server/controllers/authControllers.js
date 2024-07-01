@@ -178,7 +178,7 @@ const savedTasks = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Fetch tasks from the database for the logged-in user
-    const tasks = await Task.find({ userId: decoded.id });
+    const tasks = await Task.find({});
 
     // Ensure checklist items are objects
     const transformedTasks = tasks.map((task) => ({

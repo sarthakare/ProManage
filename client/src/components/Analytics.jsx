@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import "../styles/Analytics.css";
+import { UserContext } from "../../contex/userContext";
 
 function Analytics() {
+  const { user } = useContext(UserContext);
   const [taskCounts, setTaskCounts] = useState({
     backlog: 0,
     todo: 0,
@@ -14,44 +16,50 @@ function Analytics() {
     dueDate: 0,
   });
 
+  const calculateTaskCounts = useCallback(
+    (tasks) => {
+      const counts = {
+        backlog: 0,
+        todo: 0,
+        inProgress: 0,
+        completed: 0,
+        lowPriority: 0,
+        moderatePriority: 0,
+        highPriority: 0,
+        dueDate: 0,
+      };
+
+      tasks
+        .filter((task) => task.userId === user.id) // Filter tasks by userId
+        .forEach((task) => {
+          if (task.currentStatus === "BACKLOG") counts.backlog++;
+          if (task.currentStatus === "TODO") counts.todo++;
+          if (task.currentStatus === "INPROGRESS") counts.inProgress++;
+          if (task.currentStatus === "DONE") counts.completed++;
+          if (task.priority === "HIGH PRIORITY") counts.highPriority++;
+          if (task.priority === "MODERATE PRIORITY") counts.moderatePriority++;
+          if (task.priority === "LOW PRIORITY") counts.lowPriority++;
+          if (task.dueDate) counts.dueDate++;
+        });
+
+      setTaskCounts(counts);
+    },
+    [user.id]
+  ); // Only re-create the function if user.id changes
+
   useEffect(() => {
-    // Fetch tasks from the API
-    axios
-      .get("/alltasksdetails")
-      .then((response) => {
-        console.log(response.data);
-        calculateTaskCounts(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the tasks!", error);
-      });
-  }, []);
-
-  const calculateTaskCounts = (tasks) => {
-    const counts = {
-      backlog: 0,
-      todo: 0,
-      inProgress: 0,
-      completed: 0,
-      lowPriority: 0,
-      moderatePriority: 0,
-      highPriority: 0,
-      dueDate: 0,
-    };
-
-    tasks.forEach((task) => {
-      if (task.currentStatus === "BACKLOG") counts.backlog++;
-      if (task.currentStatus === "TODO") counts.todo++;
-      if (task.currentStatus === "INPROGRESS") counts.inProgress++;
-      if (task.currentStatus === "DONE") counts.completed++;
-      if (task.priority === "HIGH PRIORITY") counts.lowPriority++;
-      if (task.priority === "MODERATE PRIORITY") counts.moderatePriority++;
-      if (task.priority === "LOW PRIORITY") counts.highPriority++;
-      if (task.dueDate) counts.dueDate++;
-    });
-
-    setTaskCounts(counts);
-  };
+    if (user && user.id) {
+      axios
+        .get("/alltasksdetails")
+        .then((response) => {
+          console.log(response.data); // Log the fetched tasks
+          calculateTaskCounts(response.data);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the tasks!", error);
+        });
+    }
+  }, [user, calculateTaskCounts]); // Include calculateTaskCounts as a dependency
 
   return (
     <div className="analytics">
