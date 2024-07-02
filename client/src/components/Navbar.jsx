@@ -24,6 +24,7 @@ function Navbar() {
   const handleLogoutConfirm = () => {
     setShowLogoutDialog(false);
     navigate("/login");
+    window.location.reload();
   };
 
   const handleLogoutCancel = () => {

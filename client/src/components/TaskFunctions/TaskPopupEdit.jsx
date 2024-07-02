@@ -27,7 +27,7 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
           setTaskName(taskData.name);
           setPriority(taskData.priority);
           setChecklist(taskData.checklist);
-          setAssignedUser(taskData.assignedUsers);
+          setAssignedUser(taskData.assignedUsers || []);
           setDueDate(taskData.dueDate ? new Date(taskData.dueDate) : null);
         } else {
           toast.error("Failed to fetch task data.");
@@ -70,6 +70,12 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
     setChecklist(newChecklist);
   };
 
+  const handleAssignUser = (user) => {
+    setAssignUser(user);
+    setAssignedUser(user);
+    setDropdownOpen(false);
+  };
+
   const handleSave = async () => {
     // Validation checks
     if (!taskName) {
@@ -94,11 +100,13 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
       priority,
       checklist,
       dueDate,
-      assignUser,
+      assignedUsers: assignUser || assignedUser, // Ensure this includes the correct users
     };
 
+    // Print data before sending it to the database
+    console.log("Data to be sent to the database:", updatedTask);
+
     try {
-      console.log(updatedTask);
       const response = await axios.put(`/edittaskdata/${taskId}`, updatedTask);
       if (response.status === 200) {
         onSave(updatedTask); // Call the onSave callback if the API call is successful
@@ -120,11 +128,6 @@ function TaskPopupEdit({ taskId, onClose, onSave }) {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const handleAssignUser = (user) => {
-    setAssignUser(user);
-    setAssignedUser(user);
-    setDropdownOpen(false);
-  };
 
   return (
     <div className="popup">

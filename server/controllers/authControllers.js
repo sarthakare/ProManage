@@ -255,22 +255,25 @@ const updateTaskStatus = async (req, res) => {
       return res.status(400).json({ error: "Invalid status value" });
     }
 
-    const task = await Task.findOneAndUpdate(
-      { _id: taskId, userId: decoded.id },
-      { currentStatus },
-      { new: true }
-    );
+    const task = await Task.findOne({
+      _id: taskId,
+      $or: [{ userId: decoded.id }, { assignedUsers: decoded.email }],
+    });
 
     if (!task) {
-      return res.status(404).json({ error: "Task not found" });
+      return res.status(404).json({ error: "Task not found or unauthorized" });
     }
 
-    return res.json(task);
+    task.currentStatus = currentStatus;
+    const updatedTask = await task.save();
+
+    return res.json(updatedTask);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 const allTasksDetails = async (req, res) => {
   try {
@@ -340,22 +343,42 @@ const getTask = async (req, res) => {
 
 const editTaskData = async (req, res) => {
   const taskId = req.params.id; // Ensure to use 'id' here
-  const { name, priority, checklist, dueDate, assignUser } = req.body;
+  const { name, priority, checklist, dueDate, assignedUsers } = req.body;
+
+  // Log the received data
+  console.log("Received data:", {
+    name,
+    priority,
+    checklist,
+    dueDate,
+    assignedUsers,
+  });
 
   try {
     const { token } = req.cookies;
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    if (!token) {
+      console.log("Unauthorized: No token provided");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      console.log("Unauthorized: Invalid token");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     // Validate input data
     if (!name || !priority || !checklist) {
+      console.log("Validation error: Missing required fields");
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     // Find the task by ID and ensure it belongs to the authenticated user
     const task = await Task.findOne({ _id: taskId, userId: decoded.id });
     if (!task) {
+      console.log(
+        `Task not found: Task ID ${taskId} for user ID ${decoded.id}`
+      );
       return res.status(404).json({ message: "Task not found" });
     }
 
@@ -364,9 +387,10 @@ const editTaskData = async (req, res) => {
     task.priority = priority;
     task.checklist = checklist;
     task.dueDate = dueDate;
-    task.assignedUsers = assignUser;
+    task.assignedUsers = assignedUsers;
 
     const updatedTask = await task.save();
+    console.log(`Task updated successfully: Task ID ${taskId}`);
 
     // Send the updated task as a response
     res.status(200).json(updatedTask);
