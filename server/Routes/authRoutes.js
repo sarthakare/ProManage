@@ -23,7 +23,7 @@ const {
 router.use(
   cors({
     credentials: true,
-    origin: "https://pro-manage-app-gamma.vercel.app",
+    origin: "https://promanage-53au.onrender.com",
   })
 );
 
