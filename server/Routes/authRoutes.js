@@ -23,7 +23,7 @@ const {
 router.use(
   cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: "https://pro-manage-app-gamma.vercel.app",
   })
 );
 
