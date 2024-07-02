@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const cors = require("cors");
 const {
   test,
   registerUser,
@@ -20,13 +19,7 @@ const {
   getAssignedUsers,
 } = require("../controllers/authControllers");
 
-router.use(
-  cors({
-    credentials: true,
-    origin: "https://promanage-53au.onrender.com",
-  })
-);
-
+// Routes
 router.get("/", test);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
