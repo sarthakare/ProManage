@@ -20,8 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 // CORS configuration
 app.use(
   cors({
-    origin: ["https://pro-manage-app-azure.vercel.app/"],
-    methods:["POST","GET","DELETE","PUT"],
+    origin: "https://pro-manage-app-azure.vercel.app",
     credentials: true,
   })
 );
@@ -29,5 +28,6 @@ app.use(
 // Routes
 app.use("/", require("./Routes/authRoutes"));
 
-const port = 8000;
+// Start the server
+const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
