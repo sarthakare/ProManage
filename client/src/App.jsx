@@ -11,7 +11,7 @@ import ViewTask from "./components/ViewTask";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
 
-axios.defaults.baseURL = "https://pro-manage-tawny.vercel.app";
+axios.defaults.baseURL = "https://pro-manage-tawny.vercel.app/";
 axios.defaults.withCredentials = true;
 
 function App() {

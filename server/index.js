@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 // CORS configuration
 app.use(
   cors({
-    origin: "https://pro-manage-app-azure.vercel.app",
+    origin: "https://pro-manage-app-azure.vercel.app/",
     credentials: true,
   })
 );
