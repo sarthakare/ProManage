@@ -20,10 +20,28 @@ app.use(express.urlencoded({ extended: false }));
 // CORS configuration
 app.use(
   cors({
-    origin: "https://pro-manage-app-azure.vercel.app/",
+    origin: "https://pro-manage-app-azure.vercel.app",
     credentials: true,
   })
 );
+
+// Custom middleware to add headers
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://pro-manage-app-azure.vercel.app"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
 
 // Routes
 app.use("/", require("./Routes/authRoutes"));
