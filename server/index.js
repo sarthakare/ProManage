@@ -25,6 +25,24 @@ app.use(
   })
 );
 
+// Handle OPTIONS requests
+app.options("*", (req, res) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://pro-manage-app-azure.vercel.app"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.sendStatus(200); // Respond with HTTP 200 status
+});
+
 // Custom middleware to add headers
 app.use((req, res, next) => {
   res.header(
