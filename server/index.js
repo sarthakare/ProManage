@@ -18,48 +18,23 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 // CORS configuration
-app.use(
-  cors({
-    origin: "https://pro-manage-app-azure.vercel.app",
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: "https://pro-manage-app-azure.vercel.app",
+  credentials: true,
+  methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE"],
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+  ],
+};
+
+app.use(cors(corsOptions));
 
 // Handle OPTIONS requests
-app.options("*", (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://pro-manage-app-azure.vercel.app"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.sendStatus(200); // Respond with HTTP 200 status
-});
-
-// Custom middleware to add headers
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://pro-manage-app-azure.vercel.app"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  next();
-});
+app.options("*", cors(corsOptions));
 
 // Routes
 app.use("/", require("./Routes/authRoutes"));
