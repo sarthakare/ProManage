@@ -58,7 +58,7 @@ select {
 /* taskContainer CSS */
 
 .taskContainer {
-  display: grid;
+    display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   height: max-content;
   overflow-x: auto;
